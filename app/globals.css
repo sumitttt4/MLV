@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 45 100% 99%;
+  --foreground: 350 60% 12%;
+  --card: 45 100% 99%;
+  --card-foreground: 350 60% 12%;
+  --popover: 45 100% 99%;
+  --popover-foreground: 350 60% 12%;
+  --primary: 354 86% 15%;
+  --primary-foreground: 45 100% 98%;
+  --secondary: 44 58% 53%;
+  --secondary-foreground: 350 60% 12%;
+  --accent: 44 58% 53%;
+  --accent-foreground: 350 60% 12%;
+  --muted: 45 20% 92%;
+  --muted-foreground: 350 10% 35%;
+  --border: 45 20% 88%;
+  --input: 45 20% 88%;
+  --ring: 44 58% 53%;
+  --radius: 1rem;
+  --font-heading: "Playfair Display";
+  --font-body: "Inter";
+}
+
+body {
+  @apply bg-background text-foreground font-body;
+}
+
+.bg-parchment {
+  background-image: radial-gradient(
+      circle at top left,
+      rgba(212, 175, 55, 0.15),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(74, 4, 4, 0.15),
+      transparent 55%
+    ),
+    linear-gradient(180deg, #fffdf5 0%, #f7efe1 100%);
+  background-size: cover;
+}
+
+.bg-hero-texture {
+  background-image: radial-gradient(
+      circle at top left,
+      rgba(255, 255, 255, 0.15),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(212, 175, 55, 0.2),
+      transparent 60%
+    ),
+    linear-gradient(135deg, rgba(74, 4, 4, 0.92), rgba(74, 4, 4, 0.8));
+  background-size: cover;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-heading;
+}
