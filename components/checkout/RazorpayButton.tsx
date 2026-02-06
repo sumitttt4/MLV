@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { createOrder, type CartLine, type PaymentDetails } from "@/lib/api";
+import type { CartLine, PaymentDetails } from "@/lib/api";
 
 declare global {
   interface Window {
@@ -102,13 +102,26 @@ export function RazorpayButton({
               razorpayOrderId: payment.razorpay_order_id,
               razorpaySignature: payment.razorpay_signature
             };
-            const orderRecordId = await createOrder({
-              cart,
-              userDetails,
-              payment: paymentDetails
+            const orderResponse = await fetch("/api/payment/verify-order", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                cart,
+                userDetails,
+                payment: paymentDetails
+              })
             });
+
+            if (!orderResponse.ok) {
+              throw new Error("Payment verification failed.");
+            }
+
+            const { orderId } = (await orderResponse.json()) as {
+              orderId: string;
+            };
+
             onSuccess?.();
-            router.push(`/order/${orderRecordId}`);
+            router.push(`/order/${orderId}`);
           } catch (error) {
             toast.error("Payment Failed");
           }
