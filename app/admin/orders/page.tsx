@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
+
 
 type OrderStatus = "New" | "Preparing" | "Ready" | "Completed";
 
@@ -19,41 +20,7 @@ interface OrderRow {
   time: string;
 }
 
-const initialOrders: OrderRow[] = [
-  {
-    id: "ORD-1024",
-    customerName: "Aarav Sharma",
-    itemsSummary: "Royal Paneer Tikka, Butter Naan",
-    total: 860,
-    status: "New",
-    time: "2 mins ago"
-  },
-  {
-    id: "ORD-1023",
-    customerName: "Meera Kapoor",
-    itemsSummary: "Awadhi Mutton Curry, Garlic Kulcha",
-    total: 940,
-    status: "Preparing",
-    time: "8 mins ago"
-  },
-  {
-    id: "ORD-1022",
-    customerName: "Rohan Iyer",
-    itemsSummary: "Royal Chicken Biryani, Kesar Lassi",
-    total: 840,
-    status: "Ready",
-    time: "14 mins ago"
-  }
-];
 
-function playAlert() {
-  if (typeof window !== "undefined") {
-    console.info("Audio alert placeholder");
-  }
-}
-
-export default function AdminOrdersPage() {
-  const [orders, setOrders] = useState<OrderRow[]>(initialOrders);
 
   const columns = useMemo<ColumnDef<OrderRow>[]>(
     () => [
@@ -77,16 +44,7 @@ export default function AdminOrdersPage() {
             value={row.original.status}
             onChange={(event) => {
               const nextStatus = event.target.value as OrderStatus;
-              setOrders((prev) =>
-                prev.map((order) =>
-                  order.id === row.original.id
-                    ? { ...order, status: nextStatus }
-                    : order
-                )
-              );
-              if (nextStatus === "Preparing") {
-                playAlert();
-              }
+
             }}
             className="rounded-full border border-brand-gold/40 bg-white px-3 py-1 text-sm font-semibold text-brand-maroon"
           >
@@ -104,7 +62,7 @@ export default function AdminOrdersPage() {
   );
 
   const table = useReactTable({
-    data: orders,
+
     columns,
     getCoreRowModel: getCoreRowModel()
   });
@@ -119,6 +77,7 @@ export default function AdminOrdersPage() {
           Track incoming orders and keep the kitchen in perfect rhythm.
         </p>
       </header>
+
       <div className="overflow-hidden rounded-2xl border border-brand-gold/30 bg-white">
         <table className="w-full text-left text-sm">
           <thead className="bg-brand-cream text-brand-maroon">
