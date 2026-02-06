@@ -7,6 +7,7 @@ import {
   getCoreRowModel,
   useReactTable
 } from "@tanstack/react-table";
+import { PrintReceipt } from "@/components/admin/PrintReceipt";
 
 
 type OrderStatus = "New" | "Preparing" | "Ready" | "Completed";
@@ -112,6 +113,28 @@ interface OrderRow {
           </tbody>
         </table>
       </div>
+      <section className="rounded-2xl border border-brand-gold/30 bg-white p-6 shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h3 className="text-xl font-semibold text-brand-maroon">
+              Order Details
+            </h3>
+            <p className="text-sm text-brand-maroon/70">
+              Print a receipt for the highlighted order.
+            </p>
+          </div>
+          <PrintReceipt
+            orderId={orders[0]?.id ?? \"--\"}
+            total={orders[0]?.total ?? 0}
+            createdAt={new Date().toISOString()}
+            items={(orders[0]?.itemsSummary ?? \"\").split(\",\").filter(Boolean).map((itemName) => ({
+              name: itemName.trim(),
+              quantity: 1,
+              price: orders[0]?.total ? orders[0].total / (orders[0].itemsSummary.split(\",\").length || 1) : 0
+            }))}
+          />
+        </div>
+      </section>
     </section>
   );
 }

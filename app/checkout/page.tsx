@@ -1,12 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import { placeOrder } from "@/lib/api";
-import { useCart } from "@/store/useCart";
 
-export default function CheckoutPage() {
-  const router = useRouter();
   const items = useCart((state) => state.items);
   const clearCart = useCart((state) => state.clearCart);
   const getSubtotal = useCart((state) => state.getSubtotal);
@@ -15,8 +10,7 @@ export default function CheckoutPage() {
 
   const [customerId, setCustomerId] = useState("");
   const [notes, setNotes] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const cartLines = useMemo(
     () =>
@@ -33,37 +27,7 @@ export default function CheckoutPage() {
   const gst = getGst();
   const total = getTotal();
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setError(null);
 
-    if (cartLines.length === 0) {
-      setError("Your cart is empty.");
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      const orderId = await placeOrder({
-        cart: cartLines,
-        userDetails: {
-          customerId: customerId.trim() || null,
-          notes: notes.trim() || null
-        }
-      });
-      clearCart();
-      router.push(`/order/${orderId}`);
-    } catch (submitError) {
-      setError(
-        submitError instanceof Error
-          ? submitError.message
-          : "Something went wrong while placing your order."
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   return (
     <main className="min-h-screen bg-brand-cream text-brand-maroon">
@@ -89,11 +53,7 @@ export default function CheckoutPage() {
                   <div>
                     <p className="font-medium">{entry.item.name}</p>
                     <p className="text-xs text-brand-maroon/60">
-                      {entry.quantity} × ${entry.item.price.toFixed(2)}
-                    </p>
-                  </div>
-                  <p className="font-semibold">
-                    ${(entry.item.price * entry.quantity).toFixed(2)}
+
                   </p>
                 </div>
               ))
@@ -103,7 +63,7 @@ export default function CheckoutPage() {
 
         <aside className="w-full max-w-lg rounded-3xl bg-white p-8 shadow-sm">
           <h2 className="text-2xl font-semibold">Order details</h2>
-          <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+
             <label className="block text-sm font-medium">
               Customer ID (optional)
               <input
@@ -127,32 +87,7 @@ export default function CheckoutPage() {
             <div className="space-y-2 rounded-2xl bg-brand-cream px-4 py-3 text-sm">
               <div className="flex items-center justify-between">
                 <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>GST (5%)</span>
-                <span>${gst.toFixed(2)}</span>
-              </div>
-              <div className="flex items-center justify-between text-base font-semibold">
-                <span>Total</span>
-                <span>${total.toFixed(2)}</span>
-              </div>
-            </div>
 
-            {error ? (
-              <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
-                {error}
-              </p>
-            ) : null}
-
-            <button
-              type="submit"
-              disabled={isSubmitting || cartLines.length === 0}
-              className="w-full rounded-full bg-brand-maroon px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-maroon/90 disabled:cursor-not-allowed disabled:bg-brand-maroon/40"
-            >
-              {isSubmitting ? "Placing order..." : "Place order"}
-            </button>
-          </form>
         </aside>
       </div>
     </main>
