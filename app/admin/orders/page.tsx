@@ -165,14 +165,20 @@ export default function AdminOrdersPage() {
             </p>
           </div>
           <PrintReceipt
-            orderId={orders[0]?.id ?? \"--\"}
+            orderId={orders[0]?.id ?? "--"}
             total={orders[0]?.total ?? 0}
             createdAt={new Date().toISOString()}
-            items={(orders[0]?.itemsSummary ?? \"\").split(\",\").filter(Boolean).map((itemName) => ({
-              name: itemName.trim(),
-              quantity: 1,
-              price: orders[0]?.total ? orders[0].total / (orders[0].itemsSummary.split(\",\").length || 1) : 0
-            }))}
+            items={(orders[0]?.itemsSummary ?? "")
+              .split(",")
+              .filter(Boolean)
+              .map((itemName) => ({
+                name: itemName.trim(),
+                quantity: 1,
+                price: orders[0]?.total
+                  ? orders[0].total /
+                    (orders[0].itemsSummary.split(",").length || 1)
+                  : 0
+              }))}
           />
         </div>
       </section>
