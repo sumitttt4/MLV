@@ -1,10 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { RazorpayButton } from "@/components/checkout/RazorpayButton";
-import { useCart } from "@/store/useCart";
 
-export default function CheckoutPage() {
   const items = useCart((state) => state.items);
   const clearCart = useCart((state) => state.clearCart);
   const getSubtotal = useCart((state) => state.getSubtotal);
@@ -13,6 +10,7 @@ export default function CheckoutPage() {
 
   const [customerId, setCustomerId] = useState("");
   const [notes, setNotes] = useState("");
+
 
   const cartLines = useMemo(
     () =>
@@ -29,11 +27,7 @@ export default function CheckoutPage() {
   const gst = getGst();
   const total = getTotal();
 
-  const formatCurrency = (value: number) =>
-    new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR"
-    }).format(value);
+
 
   return (
     <main className="min-h-screen bg-brand-cream text-brand-maroon">
@@ -59,11 +53,7 @@ export default function CheckoutPage() {
                   <div>
                     <p className="font-medium">{entry.item.name}</p>
                     <p className="text-xs text-brand-maroon/60">
-                      {entry.quantity} × {formatCurrency(entry.item.price)}
-                    </p>
-                  </div>
-                  <p className="font-semibold">
-                    {formatCurrency(entry.item.price * entry.quantity)}
+
                   </p>
                 </div>
               ))
@@ -73,7 +63,7 @@ export default function CheckoutPage() {
 
         <aside className="w-full max-w-lg rounded-3xl bg-white p-8 shadow-sm">
           <h2 className="text-2xl font-semibold">Order details</h2>
-          <div className="mt-6 space-y-4">
+
             <label className="block text-sm font-medium">
               Customer ID (optional)
               <input
@@ -97,38 +87,7 @@ export default function CheckoutPage() {
             <div className="space-y-2 rounded-2xl bg-brand-cream px-4 py-3 text-sm">
               <div className="flex items-center justify-between">
                 <span>Subtotal</span>
-                <span>{formatCurrency(subtotal)}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>GST (5%)</span>
-                <span>{formatCurrency(gst)}</span>
-              </div>
-              <div className="flex items-center justify-between text-base font-semibold">
-                <span>Total</span>
-                <span>{formatCurrency(total)}</span>
-              </div>
-            </div>
 
-            {cartLines.length === 0 ? (
-              <button
-                type="button"
-                disabled
-                className="w-full rounded-full bg-brand-maroon/40 px-6 py-3 text-sm font-semibold text-white shadow-sm"
-              >
-                Add items to pay
-              </button>
-            ) : (
-              <RazorpayButton
-                amount={total}
-                cart={cartLines}
-                userDetails={{
-                  customerId: customerId.trim() || null,
-                  notes: notes.trim() || null
-                }}
-                onSuccess={clearCart}
-              />
-            )}
-          </div>
         </aside>
       </div>
     </main>
