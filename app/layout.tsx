@@ -4,7 +4,19 @@ import { ToasterProvider } from "@/components/ToasterProvider";
 
 export const metadata: Metadata = {
   title: "Hotel MLV Grand",
-  description: "Luxury dining and ordering experience"
+  description: "Luxury dining and ordering experience",
+  openGraph: {
+    title: "Hotel MLV Grand",
+    description: "Premium Dining",
+    images: [
+      {
+        url: "/og-image.svg",
+        width: 1200,
+        height: 630,
+        alt: "Hotel MLV Grand - Premium Dining"
+      }
+    ]
+  }
 };
 
 export default function RootLayout({
