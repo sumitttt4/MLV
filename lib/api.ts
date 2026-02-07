@@ -1,8 +1,16 @@
 import { createClient } from "@supabase/supabase-js";
 import type { MenuCategory, MenuItem, OrderItem } from "@/types/schema";
+import { menuItems as mockItems } from "./dummyData";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
+const envUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const envKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+const isMockMode = !envUrl || envUrl.includes("example") || !envKey || envKey.includes("placeholder");
+
+// Use provided env vars or valid dummy values to prevent createClient from throwing
+const supabaseUrl = envUrl || "https://example.supabase.co";
+// A valid-looking dummy JWT to satisfy supabase-js client validation if keys are missing
+const supabaseKey = envKey || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1vY2sifQ.mock_signature";
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -16,7 +24,9 @@ export interface CartLine {
 export interface PlaceOrderInput {
   cart: CartLine[];
   userDetails: {
-    customerId: string | null;
+    fullName: string;
+    phoneNumber: string;
+    deliveryAddress: string;
     notes?: string | null;
   };
 }
@@ -63,6 +73,32 @@ export interface SeedMenuItemInput {
 }
 
 export async function getMenu(): Promise<MenuResponse> {
+  if (isMockMode) {
+    // Start categories from dummyData
+    const categoriesSet = new Set(mockItems.map(i => i.category));
+    const categories = Array.from(categoriesSet).map((name, idx) => ({
+      id: `cat-${idx}`,
+      name: name,
+      description: null,
+      sortOrder: idx,
+      createdAt: new Date().toISOString()
+    }));
+
+    const items = mockItems.map(i => ({
+      id: i.id,
+      name: i.name,
+      description: i.description,
+      price: i.price,
+      categoryId: categories.find(c => c.name === i.category)?.id ?? "",
+      imageUrl: i.image,
+      isVeg: i.isVeg,
+      isAvailable: true,
+      createdAt: new Date().toISOString()
+    }));
+
+    return { categories, items };
+  }
+
   const { data: categories, error: categoriesError } = await supabase
     .from("categories")
     .select("*")
@@ -114,6 +150,7 @@ export async function getCategories(): Promise<MenuCategory[]> {
 }
 
 export async function createMenuItem(input: MenuItemInput) {
+  // Only in real backend
   const { data, error } = await supabase
     .from("menu_items")
     .insert({
@@ -169,6 +206,7 @@ export async function updateAvailability(
 }
 
 export async function seedMenuItems(menuItems: SeedMenuItemInput[]) {
+  // Only real
   const { data: existingCategories, error: categoryError } = await supabase
     .from("categories")
     .select("id,name");
@@ -254,14 +292,23 @@ export async function placeOrder({ cart, userDetails }: PlaceOrderInput) {
   const gst = Number((subtotal * 0.05).toFixed(2));
   const total = Number((subtotal + gst).toFixed(2));
 
+  if (isMockMode) {
+    // Mock Order Placement
+    return `ord_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  // Format guest details into notes since we might not have specific columns
+  const guestInfo = `Guest: ${userDetails.fullName}\nPhone: ${userDetails.phoneNumber}\nAddr: ${userDetails.deliveryAddress}`;
+  const finalNotes = userDetails.notes ? `${guestInfo}\n\nNote: ${userDetails.notes}` : guestInfo;
+
   const { data: order, error: orderError } = await supabase
     .from("orders")
     .insert({
-      customer_id: userDetails.customerId,
+      customer_id: userDetails.phoneNumber, // Use phone number as customer ID identifier
       gst,
       total,
       status: "New",
-      notes: userDetails.notes ?? null
+      notes: finalNotes
     })
     .select("id")
     .single();
@@ -322,6 +369,8 @@ export async function updateOrderStatus(
   orderId: string,
   status: "New" | "Preparing" | "Ready" | "Completed"
 ) {
+  if (isMockMode) return orderId;
+
   const { data, error } = await supabase
     .from("orders")
     .update({ status })
@@ -334,4 +383,45 @@ export async function updateOrderStatus(
   }
 
   return data?.id ?? null;
+}
+
+export async function getLiveOrders() {
+  if (isMockMode) {
+    return [
+      {
+        id: "ord_demo_1",
+        customer_id: "demo-cust-1",
+        status: "Preparing",
+        total: 1250,
+        created_at: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
+        order_items: [
+          { name: "Royal Paneer Tikka", quantity: 2 },
+          { name: "Butter Naan", quantity: 3 }
+        ]
+      },
+      {
+        id: "ord_demo_2",
+        customer_id: "demo-cust-2",
+        status: "New",
+        total: 850,
+        created_at: new Date(Date.now() - 1000 * 60 * 1).toISOString(),
+        order_items: [
+          { name: "Murgh Malai Seekh", quantity: 1 },
+          { name: "Kesar Lassi", quantity: 2 }
+        ]
+      }
+    ]
+  }
+
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*, order_items(*)")
+    .in("status", ["New", "Preparing", "Ready"])
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    throw new Error(`Unable to fetch live orders: ${error.message}`);
+  }
+
+  return data ?? [];
 }

@@ -1,6 +1,4 @@
-import type { MenuItem } from "@/types";
-
-export const menuItems: MenuItem[] = [
+export const menuItems = [
   {
     id: "starter-1",
     name: "Royal Paneer Tikka",
@@ -110,5 +108,130 @@ export const menuItems: MenuItem[] = [
     spiceLevel: "Mild",
     image:
       "https://images.unsplash.com/photo-1601000938259-9e92002320d1?auto=format&fit=crop&w=600&q=80"
+  },
+  // --- Starters ---
+  {
+    id: "starter-3",
+    name: "Hara Bhara Kebab",
+    description: "Spinach and green pea patties spiced with fresh herbs.",
+    price: 360,
+    category: "Starters",
+    isVeg: true,
+    spiceLevel: "Mild",
+    image: "https://images.unsplash.com/photo-1628294895950-98052523e036?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "starter-4",
+    name: "Tandoori Prawns",
+    description: "Jumbo prawns marinated in ajwain yogurt and grilled to perfection.",
+    price: 650,
+    category: "Starters",
+    isVeg: false,
+    spiceLevel: "Medium",
+    image: "https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "starter-5",
+    name: "Dahi Ke Sholay",
+    description: "Crispy bread pockets filled with spiced hung yogurt.",
+    price: 380,
+    category: "Starters",
+    isVeg: true,
+    spiceLevel: "Medium",
+    image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80" // Placeholder
+  },
+  // --- Main Course ---
+  {
+    id: "main-3",
+    name: "Kadhai Paneer",
+    description: "Cottage cheese tossed with bell peppers and pounded coriander seeds.",
+    price: 460,
+    category: "Main Course",
+    isVeg: true,
+    spiceLevel: "Bold",
+    image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "main-4",
+    name: "Butter Chicken",
+    description: "Classic tandoori chicken simmered in a creamy tomato gravy.",
+    price: 550,
+    category: "Main Course",
+    isVeg: false,
+    spiceLevel: "Mild",
+    image: "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "main-5",
+    name: "Rogan Josh",
+    description: "Kashmiri style lamb curry with aromatic spices and rattan jot.",
+    price: 600,
+    category: "Main Course",
+    isVeg: false,
+    spiceLevel: "Bold",
+    image: "https://images.unsplash.com/photo-1548943487-a2e4e43b485c?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "main-6",
+    name: "Malai Kofta",
+    description: "Potato and cheese dumplings in a luxurious cashew saffron gravy.",
+    price: 480,
+    category: "Main Course",
+    isVeg: true,
+    spiceLevel: "Mild",
+    image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?auto=format&fit=crop&w=600&q=80"
+  },
+  // --- Breads ---
+  {
+    id: "bread-3",
+    name: "Tandoori Roti",
+    description: "Whole wheat bread baked in a clay oven.",
+    price: 60,
+    category: "Breads",
+    isVeg: true,
+    spiceLevel: "Mild",
+    image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "bread-4",
+    name: "Lachha Paratha",
+    description: "Layered whole wheat bread with butter.",
+    price: 90,
+    category: "Breads",
+    isVeg: true,
+    spiceLevel: "Mild",
+    image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80" // Placeholder
+  },
+  // --- Biryani ---
+  {
+    id: "biryani-3",
+    name: "Hyderabadi Mutton Biryani",
+    description: "Slow cooked lamb and rice with mint, saffron and fried onions.",
+    price: 750,
+    category: "Biryani",
+    isVeg: false,
+    spiceLevel: "Medium",
+    image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80"
+  },
+  // --- Beverages ---
+  {
+    id: "beverage-2",
+    name: "Masala Chai",
+    description: "Traditional indian tea brewed with aromatic spices.",
+    price: 120,
+    category: "Beverages",
+    isVeg: true,
+    spiceLevel: "Mild",
+    image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "beverage-3",
+    name: "Fresh Lime Soda",
+    description: "Refreshing lemon drink, sweet or salted.",
+    price: 150,
+    category: "Beverages",
+    isVeg: true,
+    spiceLevel: "Mild",
+    image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80"
   }
 ];

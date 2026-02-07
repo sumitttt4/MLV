@@ -26,20 +26,7 @@ const currencyFormatter = new Intl.NumberFormat("en-IN", {
   maximumFractionDigits: 0
 });
 
-const allowedCategories = [
-  "Starters",
-  "Main Course",
-  "Breads",
-  "Biryani",
-  "Beverages",
-  "Desserts"
-] as const;
 
-function resolveCategory(categoryName: string) {
-  return allowedCategories.includes(categoryName as (typeof allowedCategories)[number])
-    ? (categoryName as MenuItem["category"])
-    : "Starters";
-}
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<OrderCard[]>([]);
@@ -118,19 +105,16 @@ export default function OrdersPage() {
         .in("id", missingIds);
 
       (menuItems ?? []).forEach((menuItem) => {
-        const categoryName =
-          (menuItem.categories as { name?: string } | null)?.name ??
-          "Starters";
-
         const mapped: MenuItem = {
           id: menuItem.id,
           name: menuItem.name,
-          description: menuItem.description,
+          description: menuItem.description || "",
           price: Number(menuItem.price),
-          category: resolveCategory(categoryName),
+          categoryId: menuItem.category_id || "unknown",
           isVeg: Boolean(menuItem.is_veg),
-          spiceLevel: "Mild",
-          image: menuItem.image_url ?? ""
+          imageUrl: menuItem.image_url ?? null,
+          isAvailable: true,
+          createdAt: new Date().toISOString()
         };
 
         itemLookup.set(menuItem.id, mapped);
@@ -191,13 +175,12 @@ export default function OrdersPage() {
                     </p>
                   </div>
                   <span
-                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                      order.status === "Completed"
-                        ? "bg-green-100 text-green-700"
-                        : order.status === "Preparing"
+                    className={`rounded-full px-3 py-1 text-xs font-semibold ${order.status === "Completed"
+                      ? "bg-green-100 text-green-700"
+                      : order.status === "Preparing"
                         ? "bg-orange-100 text-orange-700"
                         : "bg-brand-cream text-brand-maroon"
-                    }`}
+                      }`}
                   >
                     {order.status === "Completed" ? "Delivered" : order.status}
                   </span>

@@ -3,60 +3,51 @@
 @tailwind utilities;
 
 :root {
-  --background: 45 100% 99%;
-  --foreground: 350 60% 12%;
-  --card: 45 100% 99%;
-  --card-foreground: 350 60% 12%;
-  --popover: 45 100% 99%;
-  --popover-foreground: 350 60% 12%;
-  --primary: 354 86% 15%;
-  --primary-foreground: 45 100% 98%;
-  --secondary: 44 58% 53%;
-  --secondary-foreground: 350 60% 12%;
-  --accent: 44 58% 53%;
-  --accent-foreground: 350 60% 12%;
-  --muted: 45 20% 92%;
-  --muted-foreground: 350 10% 35%;
-  --border: 45 20% 88%;
-  --input: 45 20% 88%;
-  --ring: 44 58% 53%;
-  --radius: 1rem;
-  --font-heading: "Playfair Display";
-  --font-body: "Inter";
+  --background: 40 33% 96%;
+  /* #F9F5F0 converted to HSL roughly */
+  --foreground: 360 90% 15%;
+  /* #4A0404 */
+  --card: 0 0% 100%;
+  --card-foreground: 360 90% 15%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 360 90% 15%;
+  --primary: 360 90% 15%;
+  --primary-foreground: 45 61% 52%;
+  /* Gold */
+  --secondary: 45 61% 52%;
+  --secondary-foreground: 360 90% 15%;
+  --muted: 40 33% 92%;
+  --muted-foreground: 360 5% 45%;
+  --accent: 45 61% 52%;
+  --accent-foreground: 360 90% 15%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 45 30% 85%;
+  --input: 45 30% 85%;
+  --ring: 360 90% 15%;
+  --radius: 0.5rem;
+  --font-heading: "Playfair Display", serif;
+  --font-body: "Lato", sans-serif;
 }
 
 body {
-  @apply bg-background text-foreground font-body;
+  @apply bg-brand-dark text-brand-cream font-sans antialiased;
 }
 
-.bg-parchment {
-  background-image: radial-gradient(
-      circle at top left,
-      rgba(212, 175, 55, 0.15),
-      transparent 55%
-    ),
-    radial-gradient(
-      circle at bottom right,
-      rgba(74, 4, 4, 0.15),
-      transparent 55%
-    ),
-    linear-gradient(180deg, #fffdf5 0%, #f7efe1 100%);
-  background-size: cover;
+.glass-card {
+  @apply bg-brand-dark/60 backdrop-blur-md shadow-xl border border-brand-gold/10;
 }
 
 .bg-hero-texture {
-  background-image: radial-gradient(
-      circle at top left,
-      rgba(255, 255, 255, 0.15),
-      transparent 55%
-    ),
-    radial-gradient(
-      circle at bottom right,
-      rgba(212, 175, 55, 0.2),
-      transparent 60%
-    ),
-    linear-gradient(135deg, rgba(74, 4, 4, 0.92), rgba(74, 4, 4, 0.8));
-  background-size: cover;
+  background-image: radial-gradient(circle at 20% 30%,
+      rgba(197, 160, 89, 0.08),
+      transparent 40%),
+    radial-gradient(circle at 80% 70%,
+      rgba(139, 0, 0, 0.1),
+      transparent 40%),
+    url("https://www.transparenttextures.com/patterns/stardust.png");
+  /* Optional subtle noise */
+  background-color: #2A0A0A;
 }
 
 h1,
@@ -65,5 +56,5 @@ h3,
 h4,
 h5,
 h6 {
-  @apply font-heading;
+  @apply font-serif;
 }

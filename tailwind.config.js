@@ -23,28 +23,37 @@ module.exports = {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))"
         },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))"
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))"
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))"
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))"
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))"
         },
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))"
         },
         brand: {
-          maroon: "#4A0404",
-          gold: "#D4AF37",
-          cream: "#FFFDF5",
-          emerald: "#06402B"
+          maroon: "#8B0000", // Brighter Maroon for accents
+          dark: "#2A0A0A",   // Deep Dark Brown/Maroon Background
+          gold: "#C5A059",   // Muted Luxury Gold
+          cream: "#F3E5D8",  // Warm Beige/Parchment
+          black: "#1A1A1A",
         }
       },
       fontFamily: {
-        heading: ["var(--font-heading)", "Playfair Display", "serif"],
-        body: ["var(--font-body)", "Inter", "sans-serif"]
+        serif: ["var(--font-heading)", "Playfair Display", "serif"],
+        sans: ["var(--font-body)", "Lato", "Inter", "sans-serif"]
       },
       borderRadius: {
         lg: "var(--radius)",

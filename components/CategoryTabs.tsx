@@ -13,23 +13,23 @@ const categories = [
 type Category = (typeof categories)[number];
 
 interface CategoryTabsProps {
-  activeCategory: Category;
-  onChange: (category: Category) => void;
+  activeCategory: string;
+  onChange: (category: string) => void;
 }
 
 export function CategoryTabs({ activeCategory, onChange }: CategoryTabsProps) {
   return (
-    <div className="sticky top-0 z-10 border-b border-brand-gold/30 bg-parchment/90 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl gap-3 overflow-x-auto px-6 py-4">
+    <div className="w-full overflow-x-auto pb-2 md:pb-0">
+      <div className="flex w-full justify-start gap-3 md:justify-center">
         {categories.map((category) => (
           <button
             key={category}
             onClick={() => onChange(category)}
             className={clsx(
-              "whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition",
+              "whitespace-nowrap rounded-full border px-6 py-2.5 text-sm font-bold tracking-wide transition-all",
               activeCategory === category
-                ? "border-brand-gold bg-brand-gold text-brand-maroon"
-                : "border-brand-gold/40 text-brand-maroon hover:border-brand-gold"
+                ? "border-brand-gold bg-brand-gold text-brand-dark shadow-lg shadow-brand-gold/20 scale-105"
+                : "border-white/10 bg-white/5 text-brand-cream hover:border-brand-gold/50 hover:bg-white/10"
             )}
           >
             {category}

@@ -32,10 +32,14 @@ interface RazorpayButtonProps {
   amount: number;
   cart: CartLine[];
   userDetails: {
-    customerId: string | null;
+    fullName: string;
+    phoneNumber: string;
+    deliveryAddress: string;
     notes?: string | null;
+    customerId?: string | null;
   };
   onSuccess?: () => void;
+  disabled?: boolean;
 }
 
 const razorpayScriptSrc = "https://checkout.razorpay.com/v1/checkout.js";
@@ -59,7 +63,8 @@ export function RazorpayButton({
   amount,
   cart,
   userDetails,
-  onSuccess
+  onSuccess,
+  disabled
 }: RazorpayButtonProps) {
   const router = useRouter();
   const [isPaying, setIsPaying] = useState(false);
@@ -68,7 +73,6 @@ export function RazorpayButton({
     setIsPaying(true);
 
     try {
-      await loadRazorpayScript();
       const response = await fetch("/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -84,6 +88,34 @@ export function RazorpayButton({
         key: string;
       };
 
+      // Mock Mode Bypass
+      if (orderId.includes("mock")) {
+        // Simulate a short delay then success
+        setTimeout(async () => {
+          try {
+            const paymentDetails: PaymentDetails = {
+              razorpayPaymentId: `pay_mock_${Math.random().toString(36).substring(7)}`,
+              razorpayOrderId: orderId,
+              razorpaySignature: "mock_signature"
+            };
+            const orderRecordId = await createOrder({
+              cart,
+              userDetails,
+              payment: paymentDetails
+            });
+            onSuccess?.();
+            router.push(`/order/${orderRecordId}`);
+          } catch (e) {
+            toast.error("Mock Order Creation Failed");
+          } finally {
+            setIsPaying(false);
+          }
+        }, 1500);
+        return;
+      }
+
+      await loadRazorpayScript();
+
       if (!window.Razorpay) {
         throw new Error("Razorpay is unavailable.");
       }
@@ -97,20 +129,41 @@ export function RazorpayButton({
         theme: { color: "#4A0404" },
         handler: async (payment) => {
           try {
+            // 1. Verify Payment on Server
+            const verifyResponse = await fetch("/api/payment/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_order_id: payment.razorpay_order_id,
+                razorpay_payment_id: payment.razorpay_payment_id,
+                razorpay_signature: payment.razorpay_signature
+              })
+            });
+
+            const verifyResult = await verifyResponse.json();
+
+            if (!verifyResult.success) {
+              throw new Error(verifyResult.error || "Payment verification failed");
+            }
+
+            // 2. Create Order after successful verification
             const paymentDetails: PaymentDetails = {
               razorpayPaymentId: payment.razorpay_payment_id,
               razorpayOrderId: payment.razorpay_order_id,
               razorpaySignature: payment.razorpay_signature
             };
+
             const orderRecordId = await createOrder({
               cart,
               userDetails,
               payment: paymentDetails
             });
+
             onSuccess?.();
             router.push(`/order/${orderRecordId}`);
           } catch (error) {
-            toast.error("Payment Failed");
+            console.error("Payment flow failed", error);
+            toast.error("Payment successful but verification failed. Please contact support.");
           }
         }
       });
@@ -127,10 +180,10 @@ export function RazorpayButton({
     <button
       type="button"
       onClick={handlePayment}
-      disabled={isPaying}
+      disabled={isPaying || disabled}
       className="w-full rounded-full bg-brand-maroon px-6 py-3 text-sm font-semibold text-brand-cream shadow-sm transition hover:bg-brand-maroon/90 disabled:cursor-not-allowed disabled:bg-brand-maroon/40"
     >
-      {isPaying ? "Opening payment..." : "Pay with Razorpay"}
+      {isPaying ? "Opening payment..." : disabled ? "Enter Address to Order" : "Pay with Razorpay"}
     </button>
   );
 }

@@ -45,3 +45,23 @@ export interface CustomerProfile {
   role: "Customer" | "Admin";
   createdAt: string;
 }
+
+export interface Reservation {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  date: string;
+  time: string;
+  guests: number;
+  specialRequests: string | null;
+  createdAt: string;
+}
+
+export interface ContactSubmission {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  createdAt: string;
+}

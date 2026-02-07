@@ -22,6 +22,10 @@ export function CheckoutDialog({ customerId, notes }: CheckoutDialogProps) {
   const clearCart = useCart((state) => state.clearCart);
   const getTotal = useCart((state) => state.getTotal);
 
+  const [fullName, setFullName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [deliveryAddress, setDeliveryAddress] = useState("");
+
   const cartLines = useMemo(
     () =>
       items.map((entry) => ({
@@ -44,7 +48,7 @@ export function CheckoutDialog({ customerId, notes }: CheckoutDialogProps) {
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/40" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 w-[92vw] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-white p-6 shadow-lg">
+        <Dialog.Content className="fixed left-1/2 top-1/2 w-[92vw] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-white p-6 shadow-lg max-h-[90vh] overflow-y-auto">
           <div className="flex items-center justify-between">
             <Dialog.Title className="text-xl font-semibold text-brand-maroon">
               Complete payment
@@ -79,6 +83,40 @@ export function CheckoutDialog({ customerId, notes }: CheckoutDialogProps) {
             )}
           </div>
 
+          {/* User Details Form */}
+          <div className="mt-6 space-y-4">
+            <div>
+              <label className="block text-xs font-medium text-brand-maroon/60 mb-1">Full Name *</label>
+              <input
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Enter your full name"
+                className="w-full rounded-xl border border-brand-maroon/20 px-4 py-2 text-sm text-brand-maroon placeholder:text-brand-maroon/30 focus:border-brand-maroon focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-brand-maroon/60 mb-1">Phone Number *</label>
+              <input
+                type="tel"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="+91 98765 43210"
+                className="w-full rounded-xl border border-brand-maroon/20 px-4 py-2 text-sm text-brand-maroon placeholder:text-brand-maroon/30 focus:border-brand-maroon focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-brand-maroon/60 mb-1">Delivery Address *</label>
+              <textarea
+                value={deliveryAddress}
+                onChange={(e) => setDeliveryAddress(e.target.value)}
+                placeholder="Flat No, Street, Landmark..."
+                rows={2}
+                className="w-full rounded-xl border border-brand-maroon/20 px-4 py-2 text-sm text-brand-maroon placeholder:text-brand-maroon/30 focus:border-brand-maroon focus:outline-none resize-none"
+              />
+            </div>
+          </div>
+
           <div className="mt-6 rounded-2xl bg-brand-cream px-4 py-3 text-sm">
             <div className="flex items-center justify-between font-semibold">
               <span>Total</span>
@@ -91,9 +129,13 @@ export function CheckoutDialog({ customerId, notes }: CheckoutDialogProps) {
               amount={total}
               cart={cartLines}
               userDetails={{
+                fullName,
+                phoneNumber,
+                deliveryAddress,
                 customerId: customerId ?? null,
                 notes: notes ?? null
               }}
+              disabled={!fullName || !phoneNumber || !deliveryAddress}
               onSuccess={() => {
                 clearCart();
                 setIsOpen(false);
