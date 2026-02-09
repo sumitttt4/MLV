@@ -1,10 +1,25 @@
 export * from "./schema";
 
 export type Category =
-  | "Starters"
-  | "Main Course"
-  | "Breads"
+  | "Soups"
+  | "Salads"
+  | "Continental Starters"
+  | "Tandoori Starters"
+  | "Egg Items"
+  | "Platters"
+  | "Chinese Starters"
+  | "Indian Flavours"
+  | "Main Course Veg"
+  | "Main Course Non-Veg"
   | "Biryani"
-  | "Beverages"
-  | "Desserts";
-
+  | "Biryani Family Pack"
+  | "Fried Rice"
+  | "Noodles"
+  | "Indian Rice"
+  | "Dal"
+  | "Indian Breads"
+  | "Pizzas"
+  | "Pasta"
+  | "Desserts"
+  | "Ice Cream"
+  | "Beverages";

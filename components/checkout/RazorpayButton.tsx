@@ -38,6 +38,9 @@ interface RazorpayButtonProps {
     notes?: string | null;
     customerId?: string | null;
   };
+  orderType?: "delivery" | "pickup" | "dine_in";
+  paymentMethod?: "online" | "cod";
+  deliveryFee?: number;
   onSuccess?: () => void;
   disabled?: boolean;
 }
@@ -63,6 +66,9 @@ export function RazorpayButton({
   amount,
   cart,
   userDetails,
+  orderType = "delivery",
+  paymentMethod = "online",
+  deliveryFee = 0,
   onSuccess,
   disabled
 }: RazorpayButtonProps) {
@@ -101,7 +107,10 @@ export function RazorpayButton({
             const orderRecordId = await createOrder({
               cart,
               userDetails,
-              payment: paymentDetails
+              payment: paymentDetails,
+              orderType,
+              paymentMethod,
+              deliveryFee,
             });
             onSuccess?.();
             router.push(`/order/${orderRecordId}`);
@@ -156,7 +165,10 @@ export function RazorpayButton({
             const orderRecordId = await createOrder({
               cart,
               userDetails,
-              payment: paymentDetails
+              payment: paymentDetails,
+              orderType,
+              paymentMethod,
+              deliveryFee,
             });
 
             onSuccess?.();

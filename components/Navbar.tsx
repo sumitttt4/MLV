@@ -45,8 +45,8 @@ export function Navbar() {
                     {[
                         { name: "Home", href: "/" },
                         { name: "Menu", href: "/#menu" },
-                        { name: "Order Online", href: "/#menu" },
-                        { name: "Offers", href: "/#offers" },
+                        { name: "My Orders", href: "/profile/orders" },
+                        { name: "Book Table", href: "/reservation" },
                         { name: "Contact", href: "/contact" }
                     ].map((item) => (
                         <Link
@@ -103,8 +103,7 @@ export function Navbar() {
                         {[
                             { name: "Home", href: "/" },
                             { name: "Menu", href: "/#menu" },
-                            { name: "Order Online", href: "/#menu" },
-                            { name: "Offers", href: "/#offers" },
+                            { name: "My Orders", href: "/profile/orders" },
                             { name: "Contact", href: "/contact" }
                         ].map((item) => (
                             <Link

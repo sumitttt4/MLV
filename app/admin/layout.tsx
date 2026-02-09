@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/api";
 
 const links = [
-  { href: "/admin/dashboard", label: "Morning View" },
+  { href: "/admin/dashboard", label: "Dashboard" },
   { href: "/admin/orders", label: "Live Orders" },
   { href: "/admin/menu", label: "Menu Manager" },
+  { href: "/admin/reservations", label: "Reservations" },
   { href: "/admin/analytics", label: "Analytics" }
 ];
 

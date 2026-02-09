@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-table";
 import { getLiveOrders, updateOrderStatus } from "@/lib/api";
 
-type OrderStatus = "New" | "Preparing" | "Ready" | "Completed";
+import type { OrderStatus } from "@/types/schema";
 
 interface OrderRow {
   id: string;
@@ -36,7 +36,7 @@ export default function AdminOrdersPage() {
       // Assuming 'orders' has necessary fields. In a real app we'd map customer_id to name etc.
       const rows: OrderRow[] = orders.map((o: any) => ({
         id: o.id,
-        customerName: "Customer", // Placeholder as simple schema doesn't have name directly on order
+        customerName: o.customer_name || "Customer",
         itemsSummary: o.order_items ? o.order_items.map((i: any) => `${i.quantity}x ${i.name}`).join(", ") : "",
         total: o.total,
         status: o.status,
