@@ -1,38 +1,30 @@
 "use client";
 
 import clsx from "clsx";
-
-const categories = [
-  "Starters",
-  "Main Course",
-  "Breads",
-  "Biryani",
-  "Beverages"
-] as const;
-
-type Category = (typeof categories)[number];
+import type { MenuCategory } from "@/types/schema";
 
 interface CategoryTabsProps {
+  categories: MenuCategory[];
   activeCategory: string;
   onChange: (category: string) => void;
 }
 
-export function CategoryTabs({ activeCategory, onChange }: CategoryTabsProps) {
+export function CategoryTabs({ categories, activeCategory, onChange }: CategoryTabsProps) {
   return (
-    <div className="w-full overflow-x-auto pb-2 md:pb-0">
-      <div className="flex w-full justify-start gap-3 md:justify-center">
+    <div className="w-full overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+      <div className="flex w-max min-w-full justify-start gap-3 px-1 md:justify-center md:px-0">
         {categories.map((category) => (
           <button
-            key={category}
-            onClick={() => onChange(category)}
+            key={category.id}
+            onClick={() => onChange(category.name)}
             className={clsx(
-              "whitespace-nowrap rounded-full border px-6 py-2.5 text-sm font-bold tracking-wide transition-all",
-              activeCategory === category
-                ? "border-brand-gold bg-brand-gold text-brand-dark shadow-lg shadow-brand-gold/20 scale-105"
-                : "border-white/10 bg-white/5 text-brand-cream hover:border-brand-gold/50 hover:bg-white/10"
+              "whitespace-nowrap rounded-full border px-5 py-2 text-sm font-bold tracking-wide transition-all",
+              activeCategory === category.name
+                ? "border-brand-gold bg-brand-gold text-brand-dark shadow-md scale-105"
+                : "border-white/10 bg-white/5 text-brand-cream/80 hover:bg-white/10 hover:border-brand-gold/30"
             )}
           >
-            {category}
+            {category.name}
           </button>
         ))}
       </div>
@@ -40,4 +32,3 @@ export function CategoryTabs({ activeCategory, onChange }: CategoryTabsProps) {
   );
 }
 
-export type { Category };

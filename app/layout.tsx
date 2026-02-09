@@ -1,4 +1,4 @@
-import { Playfair_Display, Lato } from "next/font/google";
+import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import type { Metadata } from "next";
 import { ToasterProvider } from "@/components/ToasterProvider";
@@ -9,9 +9,8 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
-const lato = Lato({
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "700", "900"],
   variable: "--font-body",
   display: "swap",
 });
@@ -44,7 +43,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${playfair.variable} ${lato.variable}`}>
+    <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
       <body suppressHydrationWarning>
         <script
           type="application/ld+json"

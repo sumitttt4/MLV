@@ -8,7 +8,7 @@ import { ReviewsSection } from "@/components/ReviewsSection";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-brand-cream text-brand-maroon">
+    <main className="min-h-screen bg-brand-dark text-brand-cream overflow-x-hidden">
       <Hero />
       <FeaturesSection /> {/* Keeping features as Why Choose Us */}
       <MenuSection />

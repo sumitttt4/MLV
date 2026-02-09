@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CategoryTabs, type Category } from "./CategoryTabs";
+import { CategoryTabs } from "./CategoryTabs";
 import { MenuCard } from "./MenuCard";
 import { getMenu, type MenuResponse } from "@/lib/api";
 import type { MenuCategory } from "@/types/schema";
@@ -13,15 +13,52 @@ export function MenuSection() {
   const [filterMode, setFilterMode] = useState<"all" | "veg" | "non-veg">("all");
 
   useEffect(() => {
-    getMenu().then(setMenuData);
+    getMenu().then((data) => {
+      setMenuData(data);
+      if (data.categories.length > 0) {
+        setActiveCategory(data.categories[0].name);
+      }
+    });
   }, []);
 
-  if (!menuData) return null;
+  // Loading State - Skeleton Grid
+  if (!menuData) return (
+    <section className="min-h-screen bg-brand-dark pt-24 pb-20 px-6">
+      <div className="mx-auto max-w-7xl animate-pulse">
+        {/* Search Bar Skeleton */}
+        <div className="mx-auto mb-10 h-14 max-w-2xl rounded-full bg-white/5" />
+
+        {/* Chips Skeleton */}
+        <div className="mb-12 flex justify-center gap-4">
+          <div className="h-10 w-24 rounded-full bg-white/5" />
+          <div className="h-10 w-24 rounded-full bg-white/5" />
+          <div className="h-10 w-24 rounded-full bg-white/5" />
+        </div>
+
+        {/* Grid Skeleton */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="flex h-32 w-full gap-4 rounded-xl bg-white/5 p-4">
+              <div className="aspect-square h-full rounded-lg bg-white/10" />
+              <div className="flex flex-1 flex-col gap-3 py-2">
+                <div className="h-4 w-3/4 rounded bg-white/10" />
+                <div className="h-3 w-1/2 rounded bg-white/10" />
+                <div className="mt-auto h-4 w-16 rounded bg-white/10" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 
   const filteredItems = menuData.items
     .filter((item) => {
       // 1. Category check
-      const matchesCategory = item.categoryId === menuData.categories.find(c => c.name === activeCategory)?.id;
+      const currentCategory = menuData.categories.find(c => c.name === activeCategory);
+      // If for some reason activeCategory doesn't match any category (shouldn't happen with above fix), show nothing or everything?
+      // Let's show nothing to be safe, but the above useEffect fix ensures it matches.
+      const matchesCategory = item.categoryId === currentCategory?.id;
 
       // 2. Search check
       const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -37,21 +74,13 @@ export function MenuSection() {
 
   return (
     <section id="menu" className="relative z-10 min-h-screen bg-brand-dark pb-20 pt-24 text-brand-cream">
-      {/* Decorative Texture Overlay */}
-      <div className="absolute inset-0 bg-hero-texture opacity-30 pointer-events-none" />
+      {/* Clean Background */}
+
 
       <div className="mx-auto max-w-7xl px-6 relative z-10">
 
-        {/* Section Header */}
-        <div className="mb-12 text-center">
-          <span className="text-sm font-bold uppercase tracking-[0.3em] text-brand-gold">
-            Our Specialties
-          </span>
-          <h2 className="mt-3 text-5xl font-serif font-bold text-brand-cream md:text-6xl drop-shadow-xl">
-            Order Online
-          </h2>
-          <div className="mt-6 h-0.5 w-24 bg-gradient-to-r from-transparent via-brand-gold to-transparent mx-auto opacity-80" />
-        </div>
+        {/* Section Header - Hidden/Simplified for speed */}
+        <div className="mb-6"></div>
 
         {/* Search & Filter Bar */}
         <div className="mx-auto mb-10 flex max-w-2xl flex-col gap-6 md:flex-row md:items-center">
@@ -102,6 +131,7 @@ export function MenuSection() {
         <div className="sticky top-0 z-40 mb-12 -mx-6 bg-brand-dark/95 px-6 py-4 shadow-xl backdrop-blur-md md:static md:bg-transparent md:p-0 md:shadow-none border-b border-brand-gold/10 md:border-none">
           <div className="mb-0 flex justify-center">
             <CategoryTabs
+              categories={menuData.categories}
               activeCategory={activeCategory}
               onChange={setActiveCategory}
             />

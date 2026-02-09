@@ -53,7 +53,7 @@ module.exports = {
       },
       fontFamily: {
         serif: ["var(--font-heading)", "Playfair Display", "serif"],
-        sans: ["var(--font-body)", "Lato", "Inter", "sans-serif"]
+        sans: ["var(--font-body)", "Inter", "sans-serif"]
       },
       borderRadius: {
         lg: "var(--radius)",

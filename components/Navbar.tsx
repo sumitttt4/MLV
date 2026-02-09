@@ -11,7 +11,10 @@ export function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+    const [mounted, setMounted] = useState(false);
+
     useEffect(() => {
+        setMounted(true);
         const handleScroll = () => setScrolled(window.scrollY > 20);
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
@@ -64,7 +67,7 @@ export function Navbar() {
                         className="group relative flex items-center gap-2 rounded-full border border-brand-gold/30 bg-transparent px-3 py-2 transition-all hover:border-brand-gold hover:bg-brand-gold/10 z-50 md:px-4"
                     >
                         <ShoppingBag className="h-4 w-4 text-brand-gold" />
-                        {cartQuantity > 0 && (
+                        {mounted && cartQuantity > 0 && (
                             <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-brand-maroon text-[10px] font-bold text-white shadow-sm">
                                 {cartQuantity}
                             </span>
