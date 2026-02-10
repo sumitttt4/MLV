@@ -48,8 +48,24 @@ export function MenuCard({ item, index }: MenuCardProps) {
             {item.description}
           </p>
 
-          <div className="font-bold text-brand-gold text-sm">
-            ₹{item.price}
+          <div className="flex items-center gap-3">
+            <span className="font-bold text-brand-gold text-sm">
+              ₹{item.price}
+            </span>
+            {item.spiceLevel && item.spiceLevel !== "Mild" && (
+              <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${
+                item.spiceLevel === "Extra Hot" ? "bg-red-500/20 text-red-400" :
+                item.spiceLevel === "Hot" ? "bg-orange-500/20 text-orange-400" :
+                "bg-yellow-500/20 text-yellow-400"
+              }`}>
+                {item.spiceLevel}
+              </span>
+            )}
+            {item.prepTime && (
+              <span className="text-[10px] text-brand-cream/40">
+                {item.prepTime} min
+              </span>
+            )}
           </div>
         </div>
       </div>
