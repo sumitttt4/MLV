@@ -1,9 +1,102 @@
 "use client";
 
+import { useState, FormEvent } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Send, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { createContactSubmission } from "@/lib/api";
+
+interface FormErrors {
+    name?: string;
+    email?: string;
+    phone?: string;
+    subject?: string;
+    message?: string;
+}
 
 export default function ContactPage() {
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
+    const [subject, setSubject] = useState("");
+    const [message, setMessage] = useState("");
+    const [errors, setErrors] = useState<FormErrors>({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    function validate(): FormErrors {
+        const newErrors: FormErrors = {};
+
+        if (!name.trim()) {
+            newErrors.name = "Name is required.";
+        }
+
+        if (!email.trim()) {
+            newErrors.email = "Email is required.";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+            newErrors.email = "Please enter a valid email address.";
+        }
+
+        if (phone.trim() && !/^[+\d\s()-]{7,20}$/.test(phone.trim())) {
+            newErrors.phone = "Please enter a valid phone number.";
+        }
+
+        if (!message.trim()) {
+            newErrors.message = "Message is required.";
+        } else if (message.trim().length < 10) {
+            newErrors.message = "Message must be at least 10 characters.";
+        }
+
+        return newErrors;
+    }
+
+    async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+
+        const validationErrors = validate();
+        setErrors(validationErrors);
+
+        if (Object.keys(validationErrors).length > 0) {
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            const fullMessage = subject.trim()
+                ? `[Subject: ${subject.trim()}]\n\n${message.trim()}`
+                : message.trim();
+
+            await createContactSubmission({
+                name: name.trim(),
+                email: email.trim(),
+                phone: phone.trim() || undefined,
+                message: fullMessage,
+            });
+
+            toast.success("Message sent successfully! We'll get back to you soon.");
+
+            setName("");
+            setEmail("");
+            setPhone("");
+            setSubject("");
+            setMessage("");
+            setErrors({});
+        } catch (error) {
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Something went wrong. Please try again."
+            );
+        } finally {
+            setIsSubmitting(false);
+        }
+    }
+
+    const inputBaseClass =
+        "w-full rounded-lg border bg-black/20 p-4 text-brand-cream placeholder-brand-cream/30 focus:outline-none focus:ring-1 transition-colors";
+    const inputValidClass = "border-white/10 focus:border-brand-gold focus:ring-brand-gold";
+    const inputErrorClass = "border-red-500/60 focus:border-red-500 focus:ring-red-500";
+
     return (
         <main className="min-h-screen bg-brand-dark pt-24 text-brand-cream">
             <div className="mx-auto max-w-7xl px-6 pb-20">
@@ -23,7 +116,7 @@ export default function ContactPage() {
                                 </div>
                                 <h3 className="font-serif text-xl font-bold text-brand-gold">Visit Us</h3>
                                 <p className="text-sm leading-relaxed text-brand-cream/70">
-                                    123 Culinary Avenue, Food District <br /> Mumbai, India 400001
+                                    No. 123, Brigade Road, Bangalore, <br /> Karnataka 560001
                                 </p>
                             </div>
 
@@ -33,8 +126,8 @@ export default function ContactPage() {
                                 </div>
                                 <h3 className="font-serif text-xl font-bold text-brand-gold">Call Us</h3>
                                 <p className="text-sm leading-relaxed text-brand-cream/70">
-                                    +91 98765 43210 <br />
-                                    +91 22 1234 5678
+                                    +91 80 4567 8901 <br />
+                                    +91 98765 43210
                                 </p>
                             </div>
 
@@ -80,21 +173,116 @@ export default function ContactPage() {
                         className="rounded-3xl border border-white/5 bg-white/5 p-8 backdrop-blur-xl lg:p-12"
                     >
                         <h3 className="mb-6 font-serif text-3xl font-bold text-brand-gold">Send a Message</h3>
-                        <form className="space-y-6">
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            {/* Name */}
                             <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase text-brand-cream/60">Your Name</label>
-                                <input type="text" className="w-full rounded-lg border border-white/10 bg-black/20 p-4 text-brand-cream focus:border-brand-gold focus:outline-none focus:ring-1 focus:ring-brand-gold" />
+                                <label className="text-xs font-bold uppercase text-brand-cream/60">
+                                    Your Name <span className="text-red-400">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    value={name}
+                                    onChange={(e) => {
+                                        setName(e.target.value);
+                                        if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }));
+                                    }}
+                                    placeholder="John Doe"
+                                    className={`${inputBaseClass} ${errors.name ? inputErrorClass : inputValidClass}`}
+                                />
+                                {errors.name && (
+                                    <p className="text-xs text-red-400">{errors.name}</p>
+                                )}
                             </div>
+
+                            {/* Email */}
                             <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase text-brand-cream/60">Email Address</label>
-                                <input type="email" className="w-full rounded-lg border border-white/10 bg-black/20 p-4 text-brand-cream focus:border-brand-gold focus:outline-none focus:ring-1 focus:ring-brand-gold" />
+                                <label className="text-xs font-bold uppercase text-brand-cream/60">
+                                    Email Address <span className="text-red-400">*</span>
+                                </label>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => {
+                                        setEmail(e.target.value);
+                                        if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
+                                    }}
+                                    placeholder="john@example.com"
+                                    className={`${inputBaseClass} ${errors.email ? inputErrorClass : inputValidClass}`}
+                                />
+                                {errors.email && (
+                                    <p className="text-xs text-red-400">{errors.email}</p>
+                                )}
                             </div>
+
+                            {/* Phone */}
                             <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase text-brand-cream/60">Message</label>
-                                <textarea rows={5} className="w-full rounded-lg border border-white/10 bg-black/20 p-4 text-brand-cream focus:border-brand-gold focus:outline-none focus:ring-1 focus:ring-brand-gold"></textarea>
+                                <label className="text-xs font-bold uppercase text-brand-cream/60">
+                                    Phone Number
+                                </label>
+                                <input
+                                    type="tel"
+                                    value={phone}
+                                    onChange={(e) => {
+                                        setPhone(e.target.value);
+                                        if (errors.phone) setErrors((prev) => ({ ...prev, phone: undefined }));
+                                    }}
+                                    placeholder="+91 98765 43210"
+                                    className={`${inputBaseClass} ${errors.phone ? inputErrorClass : inputValidClass}`}
+                                />
+                                {errors.phone && (
+                                    <p className="text-xs text-red-400">{errors.phone}</p>
+                                )}
                             </div>
-                            <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-brand-gold py-4 text-sm font-bold uppercase tracking-widest text-brand-dark hover:bg-white transition-colors">
-                                Send Message <Send size={16} />
+
+                            {/* Subject */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold uppercase text-brand-cream/60">
+                                    Subject
+                                </label>
+                                <input
+                                    type="text"
+                                    value={subject}
+                                    onChange={(e) => setSubject(e.target.value)}
+                                    placeholder="How can we help?"
+                                    className={`${inputBaseClass} ${inputValidClass}`}
+                                />
+                            </div>
+
+                            {/* Message */}
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold uppercase text-brand-cream/60">
+                                    Message <span className="text-red-400">*</span>
+                                </label>
+                                <textarea
+                                    rows={5}
+                                    value={message}
+                                    onChange={(e) => {
+                                        setMessage(e.target.value);
+                                        if (errors.message) setErrors((prev) => ({ ...prev, message: undefined }));
+                                    }}
+                                    placeholder="Tell us what you have in mind..."
+                                    className={`${inputBaseClass} ${errors.message ? inputErrorClass : inputValidClass}`}
+                                ></textarea>
+                                {errors.message && (
+                                    <p className="text-xs text-red-400">{errors.message}</p>
+                                )}
+                            </div>
+
+                            {/* Submit Button */}
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="flex w-full items-center justify-center gap-2 rounded-lg bg-brand-gold py-4 text-sm font-bold uppercase tracking-widest text-brand-dark hover:bg-white transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                                {isSubmitting ? (
+                                    <>
+                                        Sending... <Loader2 size={16} className="animate-spin" />
+                                    </>
+                                ) : (
+                                    <>
+                                        Send Message <Send size={16} />
+                                    </>
+                                )}
                             </button>
                         </form>
                     </motion.div>

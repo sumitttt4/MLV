@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
+  Bell,
   CheckCircle2,
   Clock,
   ChefHat,
@@ -26,6 +27,7 @@ import {
 
 import type { Order, OrderStatus } from "@/types/schema";
 import { getOrderById } from "@/lib/api";
+import { useOrderRealtime } from "@/hooks/useOrderRealtime";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -632,6 +634,15 @@ export default function OrderTrackingPage() {
     [orderId]
   );
 
+  // ---- Realtime subscription ----
+  const { isSubscribed, notificationPermission, requestPermission } =
+    useOrderRealtime(orderId, {
+      onStatusChange: () => {
+        fetchOrder({ silent: true });
+      },
+      enableNotifications: true,
+    });
+
   // Initial fetch
   useEffect(() => {
     fetchOrder();
@@ -702,6 +713,18 @@ export default function OrderTrackingPage() {
 
           {/* Refresh indicator */}
           <div className="flex items-center gap-3">
+            {/* Enable Notifications button – shown when permission is not yet granted */}
+            {!isDelivered && !isCancelled && notificationPermission !== "granted" && notificationPermission !== "unsupported" && (
+              <button
+                onClick={requestPermission}
+                className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-xs font-semibold text-brand-cream/60 transition-colors hover:border-brand-gold/30 hover:text-brand-gold"
+                title="Get notified when your order status changes"
+              >
+                <Bell className="h-3.5 w-3.5" />
+                Enable Notifications
+              </button>
+            )}
+
             {!isDelivered && !isCancelled && (
               <button
                 onClick={() => fetchOrder({ silent: true })}
@@ -783,7 +806,9 @@ export default function OrderTrackingPage() {
                       ? "This order was cancelled"
                       : isDelivered
                         ? "Order complete"
-                        : "Live status updates every 15 seconds"}
+                        : isSubscribed
+                          ? "Live realtime updates"
+                          : "Polling every 15 seconds"}
                   </p>
                 </div>
                 {!isDelivered && !isCancelled && isRefreshing && (
@@ -837,6 +862,15 @@ export default function OrderTrackingPage() {
                 transition={{ delay: 0.6 }}
                 className="text-center text-[11px] text-brand-cream/30"
               >
+                {isSubscribed && (
+                  <span className="mr-1.5 inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-green-400">
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
+                    </span>
+                    Live
+                  </span>
+                )}
                 Auto-refreshes every 15 seconds
                 <br />
                 Last updated: {lastRefreshed.toLocaleTimeString("en-IN")}
