@@ -2,12 +2,14 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, UserCircle } from "lucide-react";
 import { useCart } from "@/store/useCart";
+import { useAuth } from "@/store/useAuth";
 import { useEffect, useState } from "react";
 
 export function Navbar() {
     const cartQuantity = useCart((state) => state.items.length);
+    const user = useAuth((state) => state.user);
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -63,6 +65,19 @@ export function Navbar() {
                 {/* Actions */}
                 <div className="flex items-center gap-3 md:gap-4">
                     <Link
+                        href={user ? "/profile" : "/auth"}
+                        className="flex items-center gap-2 rounded-full border border-brand-gold/30 bg-transparent px-3 py-2 transition-all hover:border-brand-gold hover:bg-brand-gold/10 z-50"
+                        title={user ? user.fullName : "Sign In"}
+                    >
+                        <UserCircle className="h-4 w-4 text-brand-gold" />
+                        {mounted && user && (
+                            <span className="hidden text-xs font-semibold text-brand-gold md:inline">
+                                {user.fullName.split(" ")[0]}
+                            </span>
+                        )}
+                    </Link>
+
+                    <Link
                         href="/checkout"
                         className="group relative flex items-center gap-2 rounded-full border border-brand-gold/30 bg-transparent px-3 py-2 transition-all hover:border-brand-gold hover:bg-brand-gold/10 z-50 md:px-4"
                     >
@@ -104,6 +119,7 @@ export function Navbar() {
                             { name: "Home", href: "/" },
                             { name: "Menu", href: "/#menu" },
                             { name: "My Orders", href: "/profile/orders" },
+                            { name: user ? "Profile" : "Sign In", href: user ? "/profile" : "/auth" },
                             { name: "Contact", href: "/contact" }
                         ].map((item) => (
                             <Link

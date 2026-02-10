@@ -1,16 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Flame, ArrowUpDown } from "lucide-react";
 import { CategoryTabs } from "./CategoryTabs";
 import { MenuCard } from "./MenuCard";
 import { getMenu, type MenuResponse } from "@/lib/api";
-import type { MenuCategory } from "@/types/schema";
+import type { MenuCategory, SpiceLevel } from "@/types/schema";
+
+type PriceSort = "default" | "low-high" | "high-low";
+type PriceRange = "all" | "under200" | "200-400" | "400plus";
 
 export function MenuSection() {
   const [activeCategory, setActiveCategory] = useState<MenuCategory["name"]>("Starters");
   const [menuData, setMenuData] = useState<MenuResponse | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterMode, setFilterMode] = useState<"all" | "veg" | "non-veg">("all");
+  const [spiceFilter, setSpiceFilter] = useState<"all" | SpiceLevel>("all");
+  const [priceSort, setPriceSort] = useState<PriceSort>("default");
+  const [priceRange, setPriceRange] = useState<PriceRange>("all");
 
   useEffect(() => {
     getMenu().then((data) => {
@@ -35,6 +42,14 @@ export function MenuSection() {
           <div className="h-10 w-24 rounded-full bg-white/5" />
         </div>
 
+        {/* Filter Row Skeleton */}
+        <div className="mb-8 flex justify-center gap-3">
+          <div className="h-8 w-16 rounded-full bg-white/5" />
+          <div className="h-8 w-16 rounded-full bg-white/5" />
+          <div className="h-8 w-16 rounded-full bg-white/5" />
+          <div className="h-8 w-16 rounded-full bg-white/5" />
+        </div>
+
         {/* Grid Skeleton */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -52,25 +67,62 @@ export function MenuSection() {
     </section>
   );
 
+  const isSearching = searchTerm.trim().length > 0;
+
   const filteredItems = menuData.items
     .filter((item) => {
-      // 1. Category check
-      const currentCategory = menuData.categories.find(c => c.name === activeCategory);
-      // If for some reason activeCategory doesn't match any category (shouldn't happen with above fix), show nothing or everything?
-      // Let's show nothing to be safe, but the above useEffect fix ensures it matches.
-      const matchesCategory = item.categoryId === currentCategory?.id;
+      // 1. Category check - skip when searching across all categories
+      if (!isSearching) {
+        const currentCategory = menuData.categories.find(c => c.name === activeCategory);
+        const matchesCategory = item.categoryId === currentCategory?.id;
+        if (!matchesCategory) return false;
+      }
 
       // 2. Search check
       const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.description?.toLowerCase().includes(searchTerm.toLowerCase());
+      if (!matchesSearch) return false;
 
-      // 3. Filter Mode check (Veg/Non-Veg)
-      let matchesFilter = true;
-      if (filterMode === "veg") matchesFilter = item.isVeg === true;
-      if (filterMode === "non-veg") matchesFilter = item.isVeg === false;
+      // 3. Veg/Non-Veg filter
+      if (filterMode === "veg" && item.isVeg !== true) return false;
+      if (filterMode === "non-veg" && item.isVeg !== false) return false;
 
-      return matchesCategory && matchesSearch && matchesFilter;
+      // 4. Spice level filter
+      if (spiceFilter !== "all" && item.spiceLevel !== spiceFilter) return false;
+
+      // 5. Price range filter
+      if (priceRange === "under200" && item.price >= 200) return false;
+      if (priceRange === "200-400" && (item.price < 200 || item.price > 400)) return false;
+      if (priceRange === "400plus" && item.price <= 400) return false;
+
+      return true;
+    })
+    .sort((a, b) => {
+      if (priceSort === "low-high") return a.price - b.price;
+      if (priceSort === "high-low") return b.price - a.price;
+      return 0;
     });
+
+  const spiceLevels: Array<{ label: string; value: "all" | SpiceLevel }> = [
+    { label: "All", value: "all" },
+    { label: "Mild", value: "Mild" },
+    { label: "Medium", value: "Medium" },
+    { label: "Hot", value: "Hot" },
+    { label: "Extra Hot", value: "Extra Hot" },
+  ];
+
+  const priceRanges: Array<{ label: string; value: PriceRange }> = [
+    { label: "All", value: "all" },
+    { label: "Under \u20B9200", value: "under200" },
+    { label: "\u20B9200-400", value: "200-400" },
+    { label: "\u20B9400+", value: "400plus" },
+  ];
+
+  const priceSortOptions: Array<{ label: string; value: PriceSort }> = [
+    { label: "Default", value: "default" },
+    { label: "Price: Low \u2192 High", value: "low-high" },
+    { label: "Price: High \u2192 Low", value: "high-low" },
+  ];
 
   return (
     <section id="menu" className="relative z-10 min-h-screen bg-brand-dark pb-20 pt-24 text-brand-cream">
@@ -82,8 +134,8 @@ export function MenuSection() {
         {/* Section Header - Hidden/Simplified for speed */}
         <div className="mb-6"></div>
 
-        {/* Search & Filter Bar */}
-        <div className="mx-auto mb-10 flex max-w-2xl flex-col gap-6 md:flex-row md:items-center">
+        {/* Search & Veg/Non-Veg Filter Bar */}
+        <div className="mx-auto mb-6 flex max-w-2xl flex-col gap-6 md:flex-row md:items-center">
           <div className="relative flex-1">
             <input
               type="text"
@@ -127,8 +179,59 @@ export function MenuSection() {
           </div>
         </div>
 
+        {/* Spice Level Filter */}
+        <div className="mx-auto mb-4 flex max-w-2xl flex-wrap items-center justify-center gap-2">
+          <Flame className="h-4 w-4 text-orange-400" />
+          {spiceLevels.map((level) => (
+            <button
+              key={level.value}
+              onClick={() => setSpiceFilter(level.value)}
+              className={`rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${spiceFilter === level.value
+                ? "border-orange-400 bg-orange-400 text-brand-dark"
+                : "border-orange-400/30 text-orange-400 hover:bg-orange-400/10"
+                }`}
+            >
+              {level.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Price Range Filter */}
+        <div className="mx-auto mb-4 flex max-w-2xl flex-wrap items-center justify-center gap-2">
+          <span className="text-xs font-semibold uppercase tracking-wider text-brand-gold/60">Price:</span>
+          {priceRanges.map((range) => (
+            <button
+              key={range.value}
+              onClick={() => setPriceRange(range.value)}
+              className={`rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${priceRange === range.value
+                ? "border-brand-gold bg-brand-gold text-brand-dark"
+                : "border-brand-gold/30 text-brand-gold hover:bg-brand-gold/10"
+                }`}
+            >
+              {range.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Price Sort */}
+        <div className="mx-auto mb-8 flex max-w-2xl flex-wrap items-center justify-center gap-2">
+          <ArrowUpDown className="h-4 w-4 text-brand-cream/50" />
+          {priceSortOptions.map((option) => (
+            <button
+              key={option.value}
+              onClick={() => setPriceSort(option.value)}
+              className={`rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${priceSort === option.value
+                ? "border-brand-cream bg-brand-cream/20 text-brand-cream"
+                : "border-brand-cream/20 text-brand-cream/50 hover:bg-brand-cream/10"
+                }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+
         {/* Tabs */}
-        <div className="sticky top-0 z-40 mb-12 -mx-6 bg-brand-dark/95 px-6 py-4 shadow-xl backdrop-blur-md md:static md:bg-transparent md:p-0 md:shadow-none border-b border-brand-gold/10 md:border-none">
+        <div className="sticky top-0 z-40 mb-8 -mx-6 bg-brand-dark/95 px-6 py-4 shadow-xl backdrop-blur-md md:static md:bg-transparent md:p-0 md:shadow-none border-b border-brand-gold/10 md:border-none">
           <div className="mb-0 flex justify-center">
             <CategoryTabs
               categories={menuData.categories}
@@ -138,12 +241,30 @@ export function MenuSection() {
           </div>
         </div>
 
+        {/* Results Count */}
+        <div className="mb-6 text-center">
+          <p className="text-sm text-brand-cream/50">
+            Showing {filteredItems.length} {filteredItems.length === 1 ? "item" : "items"}
+            {isSearching && (
+              <span className="ml-1 text-brand-gold/70">across all categories</span>
+            )}
+          </p>
+        </div>
+
         {/* Menu Grid */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2">
           {filteredItems.map((item, index) => (
             <MenuCard key={item.id} item={item} index={index} />
           ))}
         </div>
+
+        {/* Empty State */}
+        {filteredItems.length === 0 && (
+          <div className="py-20 text-center">
+            <p className="text-lg text-brand-cream/40">No dishes found matching your filters.</p>
+            <p className="mt-2 text-sm text-brand-cream/25">Try adjusting your search or filters.</p>
+          </div>
+        )}
 
         {/* Footer Note */}
         <div className="mt-20 text-center">

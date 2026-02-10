@@ -9,6 +9,8 @@ import type {
   PaymentMethod,
   Reservation,
   DeliveryZone,
+  CustomerProfile,
+  ContactSubmission,
 } from "@/types/schema";
 import { menuItems as mockItems } from "./dummyData";
 
@@ -722,6 +724,367 @@ export async function updateReservationStatus(
   }
 
   return data?.id ?? null;
+}
+
+// ─────────────────────────────────────────────
+// Delivery Zone APIs
+// ─────────────────────────────────────────────
+
+// ─────────────────────────────────────────────
+// Contact Submissions
+// ─────────────────────────────────────────────
+
+export interface CreateContactInput {
+  name: string;
+  email: string;
+  phone?: string;
+  message: string;
+}
+
+export async function createContactSubmission(input: CreateContactInput): Promise<string> {
+  if (isMockMode) {
+    return `contact_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  const { data, error } = await supabase
+    .from("contact_submissions")
+    .insert({
+      name: input.name,
+      email: input.email,
+      phone: input.phone || null,
+      message: input.message,
+      is_read: false,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data) {
+    throw new Error(`Unable to submit contact form: ${error?.message ?? "Unknown error"}`);
+  }
+
+  return data.id;
+}
+
+// ─────────────────────────────────────────────
+// Customer Profile APIs
+// ─────────────────────────────────────────────
+
+export async function signUp(email: string, password: string, fullName: string, phone?: string) {
+  if (isMockMode) {
+    return { userId: `user_${Math.random().toString(36).substr(2, 9)}` };
+  }
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { full_name: fullName, phone: phone || null },
+    },
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (data.user) {
+    await supabase.from("customer_profiles").insert({
+      id: data.user.id,
+      full_name: fullName,
+      email,
+      phone: phone || null,
+      role: "customer",
+    });
+  }
+
+  return { userId: data.user?.id ?? null };
+}
+
+export async function signIn(email: string, password: string) {
+  if (isMockMode) {
+    return {
+      userId: "user_demo",
+      profile: {
+        id: "user_demo",
+        fullName: "Demo User",
+        email,
+        phone: "+91 98765 43210",
+        role: "customer" as const,
+        createdAt: new Date().toISOString(),
+      },
+    };
+  }
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const { data: profile } = await supabase
+    .from("customer_profiles")
+    .select("*")
+    .eq("id", data.user.id)
+    .single();
+
+  return {
+    userId: data.user.id,
+    profile: profile
+      ? {
+          id: profile.id,
+          fullName: profile.full_name,
+          email: profile.email,
+          phone: profile.phone,
+          role: profile.role,
+          createdAt: profile.created_at,
+        }
+      : null,
+  };
+}
+
+export async function signOutUser() {
+  if (isMockMode) return;
+  await supabase.auth.signOut();
+}
+
+export async function getCurrentUser() {
+  if (isMockMode) return null;
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data: profile } = await supabase
+    .from("customer_profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  return profile
+    ? {
+        id: profile.id,
+        fullName: profile.full_name,
+        email: profile.email,
+        phone: profile.phone,
+        role: profile.role,
+        createdAt: profile.created_at,
+      }
+    : null;
+}
+
+export async function updateCustomerProfile(userId: string, updates: { fullName?: string; phone?: string; defaultAddress?: string }) {
+  if (isMockMode) return;
+
+  const updateData: Record<string, unknown> = {};
+  if (updates.fullName) updateData.full_name = updates.fullName;
+  if (updates.phone) updateData.phone = updates.phone;
+  if (updates.defaultAddress) updateData.default_address = updates.defaultAddress;
+
+  const { error } = await supabase
+    .from("customer_profiles")
+    .update(updateData)
+    .eq("id", userId);
+
+  if (error) {
+    throw new Error(`Unable to update profile: ${error.message}`);
+  }
+}
+
+export async function getSavedAddresses(userId: string): Promise<string[]> {
+  if (isMockMode) {
+    return ["123 Demo Street, Bangalore", "456 Mock Lane, Koramangala"];
+  }
+
+  const { data } = await supabase
+    .from("customer_profiles")
+    .select("default_address, saved_addresses")
+    .eq("id", userId)
+    .single();
+
+  if (!data) return [];
+  const addresses: string[] = [];
+  if (data.default_address) addresses.push(data.default_address);
+  if (data.saved_addresses && Array.isArray(data.saved_addresses)) {
+    addresses.push(...data.saved_addresses);
+  }
+  return addresses;
+}
+
+// ─────────────────────────────────────────────
+// Analytics APIs
+// ─────────────────────────────────────────────
+
+export interface AnalyticsData {
+  todayRevenue: number;
+  weekRevenue: number;
+  monthRevenue: number;
+  totalOrders: number;
+  todayOrders: number;
+  avgOrderValue: number;
+  popularItems: { name: string; count: number; revenue: number }[];
+  revenueByDay: { date: string; revenue: number; orders: number }[];
+  ordersByType: { type: string; count: number }[];
+  ordersByStatus: { status: string; count: number }[];
+  hourlyDistribution: { hour: string; orders: number }[];
+  topCategories: { name: string; revenue: number }[];
+}
+
+export async function getAnalyticsData(): Promise<AnalyticsData> {
+  if (isMockMode) {
+    const today = new Date();
+    const days = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(today);
+      d.setDate(d.getDate() - (6 - i));
+      return d.toISOString().split("T")[0];
+    });
+
+    return {
+      todayRevenue: 24850,
+      weekRevenue: 168420,
+      monthRevenue: 685000,
+      totalOrders: 1247,
+      todayOrders: 38,
+      avgOrderValue: 654,
+      popularItems: [
+        { name: "Chicken Dum Biryani", count: 156, revenue: 43680 },
+        { name: "Paneer Tikka", count: 134, revenue: 37520 },
+        { name: "Butter Naan", count: 289, revenue: 14450 },
+        { name: "MLV Grand Platter", count: 67, revenue: 33500 },
+        { name: "Hyderabadi Mutton Biryani", count: 98, revenue: 34300 },
+        { name: "Chicken Tandoori Full", count: 85, revenue: 29750 },
+        { name: "Dal Makhani", count: 112, revenue: 22400 },
+        { name: "Gulab Jamun", count: 145, revenue: 14500 },
+      ],
+      revenueByDay: days.map((date, i) => ({
+        date,
+        revenue: 18000 + Math.floor(Math.random() * 12000),
+        orders: 28 + Math.floor(Math.random() * 20),
+      })),
+      ordersByType: [
+        { type: "Delivery", count: 520 },
+        { type: "Pickup", count: 380 },
+        { type: "Dine-in", count: 347 },
+      ],
+      ordersByStatus: [
+        { status: "Delivered", count: 1089 },
+        { status: "Preparing", count: 12 },
+        { status: "Ready", count: 5 },
+        { status: "Received", count: 8 },
+        { status: "Out for Delivery", count: 7 },
+        { status: "Cancelled", count: 126 },
+      ],
+      hourlyDistribution: Array.from({ length: 14 }, (_, i) => ({
+        hour: `${(i + 10).toString().padStart(2, "0")}:00`,
+        orders: i >= 1 && i <= 3 ? 8 + Math.floor(Math.random() * 5) :
+                i >= 7 && i <= 10 ? 12 + Math.floor(Math.random() * 8) :
+                3 + Math.floor(Math.random() * 5),
+      })),
+      topCategories: [
+        { name: "Biryani", revenue: 98500 },
+        { name: "Tandoori Starters", revenue: 67200 },
+        { name: "Main Course Non-Veg", revenue: 54800 },
+        { name: "Chinese Starters", revenue: 42300 },
+        { name: "Indian Breads", revenue: 28600 },
+        { name: "Beverages", revenue: 24100 },
+      ],
+    };
+  }
+
+  const now = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+  const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7).toISOString();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
+  const [
+    { data: todayOrders },
+    { data: weekOrders },
+    { data: monthOrders },
+    { count: totalCount },
+    { data: allOrders },
+    { data: itemRows },
+  ] = await Promise.all([
+    supabase.from("orders").select("total,status,order_type,created_at").gte("created_at", startOfToday),
+    supabase.from("orders").select("total,created_at").gte("created_at", startOfWeek).in("status", ["Delivered", "Completed"]),
+    supabase.from("orders").select("total").gte("created_at", startOfMonth).in("status", ["Delivered", "Completed"]),
+    supabase.from("orders").select("id", { count: "exact", head: true }),
+    supabase.from("orders").select("total,status,order_type,created_at").gte("created_at", startOfWeek),
+    supabase.from("order_items").select("name,quantity,price"),
+  ]);
+
+  const todayRevenue = (todayOrders ?? [])
+    .filter(o => ["Delivered", "Completed"].includes(o.status))
+    .reduce((sum, o) => sum + Number(o.total), 0);
+  const weekRevenue = (weekOrders ?? []).reduce((sum, o) => sum + Number(o.total), 0);
+  const monthRevenue = (monthOrders ?? []).reduce((sum, o) => sum + Number(o.total), 0);
+  const todayOrderCount = (todayOrders ?? []).length;
+  const avgOrderValue = totalCount && totalCount > 0 ? Math.round(monthRevenue / Math.max(1, (monthOrders ?? []).length)) : 0;
+
+  // Popular items
+  const itemMap = new Map<string, { count: number; revenue: number }>();
+  (itemRows ?? []).forEach((row) => {
+    const existing = itemMap.get(row.name) ?? { count: 0, revenue: 0 };
+    existing.count += Number(row.quantity);
+    existing.revenue += Number(row.price) * Number(row.quantity);
+    itemMap.set(row.name, existing);
+  });
+  const popularItems = Array.from(itemMap.entries())
+    .map(([name, data]) => ({ name, ...data }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 8);
+
+  // Revenue by day
+  const dayMap = new Map<string, { revenue: number; orders: number }>();
+  (allOrders ?? []).forEach((o) => {
+    const day = o.created_at.split("T")[0];
+    const existing = dayMap.get(day) ?? { revenue: 0, orders: 0 };
+    existing.revenue += Number(o.total);
+    existing.orders += 1;
+    dayMap.set(day, existing);
+  });
+  const revenueByDay = Array.from(dayMap.entries())
+    .map(([date, data]) => ({ date, ...data }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  // Orders by type
+  const typeMap = new Map<string, number>();
+  (allOrders ?? []).forEach((o) => {
+    const label = o.order_type === "delivery" ? "Delivery" : o.order_type === "pickup" ? "Pickup" : "Dine-in";
+    typeMap.set(label, (typeMap.get(label) ?? 0) + 1);
+  });
+  const ordersByType = Array.from(typeMap.entries()).map(([type, count]) => ({ type, count }));
+
+  // Orders by status
+  const statusMap = new Map<string, number>();
+  (allOrders ?? []).forEach((o) => {
+    statusMap.set(o.status, (statusMap.get(o.status) ?? 0) + 1);
+  });
+  const ordersByStatus = Array.from(statusMap.entries()).map(([status, count]) => ({ status, count }));
+
+  // Hourly distribution
+  const hourMap = new Map<string, number>();
+  (todayOrders ?? []).forEach((o) => {
+    const hour = new Date(o.created_at).getHours().toString().padStart(2, "0") + ":00";
+    hourMap.set(hour, (hourMap.get(hour) ?? 0) + 1);
+  });
+  const hourlyDistribution = Array.from(hourMap.entries())
+    .map(([hour, orders]) => ({ hour, orders }))
+    .sort((a, b) => a.hour.localeCompare(b.hour));
+
+  return {
+    todayRevenue,
+    weekRevenue,
+    monthRevenue,
+    totalOrders: totalCount ?? 0,
+    todayOrders: todayOrderCount,
+    avgOrderValue,
+    popularItems,
+    revenueByDay,
+    ordersByType,
+    ordersByStatus,
+    hourlyDistribution,
+    topCategories: [],
+  };
 }
 
 // ─────────────────────────────────────────────
