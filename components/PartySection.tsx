@@ -25,7 +25,7 @@ const events = [
 
 export function PartySection() {
     return (
-        <section className="bg-brand-dark py-24 pb-32">
+        <section className="bg-brand-tamarind py-24 pb-32">
             <div className="mx-auto max-w-7xl px-6">
                 <div className="mb-16 text-center">
                     <span className="font-serif text-lg italic text-brand-gold">Occasions</span>
@@ -34,7 +34,7 @@ export function PartySection() {
 
                 <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
                     {events.map((event, i) => (
-                        <div key={i} className="group relative overflow-hidden rounded-3xl border border-brand-gold/10 bg-white/5 transition-all hover:-translate-y-2 hover:border-brand-gold/30 hover:shadow-2xl">
+                        <div key={i} className="group relative overflow-hidden rounded-card border border-brand-gold/10 bg-brand-cocoa transition-all hover:-translate-y-2 hover:border-brand-gold/30 hover:shadow-2xl">
                             {/* Image */}
                             <div className="relative h-64 w-full overflow-hidden">
                                 <Image
@@ -43,14 +43,14 @@ export function PartySection() {
                                     fill
                                     className="object-cover transition-transform duration-700 group-hover:scale-110 group-hover:opacity-80"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-brand-dark to-transparent opacity-90" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-brand-cocoa to-transparent opacity-90" />
                             </div>
 
                             {/* Content */}
                             <div className="absolute bottom-0 left-0 right-0 p-8 text-center">
                                 <h3 className="mb-2 font-serif text-2xl font-bold text-brand-gold">{event.title}</h3>
                                 <p className="mb-6 text-sm text-brand-cream/70">{event.subtitle}</p>
-                                <button className="min-w-[140px] rounded-full border border-brand-gold/30 bg-black/40 px-6 py-2 text-xs font-bold uppercase tracking-widest text-brand-cream backdrop-blur-sm transition-colors hover:border-brand-gold hover:bg-brand-gold hover:text-brand-dark">
+                                <button className="min-w-[140px] rounded-full bg-brand-gold px-6 py-2 text-xs font-bold uppercase tracking-widest text-brand-cocoa transition-colors hover:bg-brand-cream hover:text-brand-cocoa">
                                     {event.action}
                                 </button>
                             </div>

@@ -320,7 +320,7 @@ export default function AuthPage() {
                   disabled={loginSubmitting}
                   whileHover={{ scale: loginSubmitting ? 1 : 1.02 }}
                   whileTap={{ scale: loginSubmitting ? 1 : 0.98 }}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-gold py-3.5 text-sm font-bold uppercase tracking-widest text-brand-dark shadow-lg transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-gold py-3.5 text-sm font-bold uppercase tracking-widest text-brand-dark shadow-lg transition-colors hover:bg-brand-cream disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {loginSubmitting ? (
                     <>
@@ -531,7 +531,7 @@ export default function AuthPage() {
                   disabled={signupSubmitting}
                   whileHover={{ scale: signupSubmitting ? 1 : 1.02 }}
                   whileTap={{ scale: signupSubmitting ? 1 : 0.98 }}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-gold py-3.5 text-sm font-bold uppercase tracking-widest text-brand-dark shadow-lg transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-gold py-3.5 text-sm font-bold uppercase tracking-widest text-brand-dark shadow-lg transition-colors hover:bg-brand-cream disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {signupSubmitting ? (
                     <>

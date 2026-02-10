@@ -426,7 +426,7 @@ export default function ProfilePage() {
                       disabled={editSaving}
                       whileHover={{ scale: editSaving ? 1 : 1.02 }}
                       whileTap={{ scale: editSaving ? 1 : 0.98 }}
-                      className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-gold py-3 text-sm font-bold uppercase tracking-widest text-brand-dark transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-gold py-3 text-sm font-bold uppercase tracking-widest text-brand-dark transition-colors hover:bg-brand-cream disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {editSaving ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -555,7 +555,7 @@ export default function ProfilePage() {
                         type="button"
                         onClick={handleAddAddress}
                         disabled={addingAddress || !newAddress.trim()}
-                        className="flex items-center gap-2 rounded-lg bg-brand-gold px-5 py-2.5 text-sm font-bold text-brand-dark transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex items-center gap-2 rounded-lg bg-brand-gold px-5 py-2.5 text-sm font-bold text-brand-dark transition-colors hover:bg-brand-cream disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {addingAddress ? (
                           <Loader2 className="h-4 w-4 animate-spin" />

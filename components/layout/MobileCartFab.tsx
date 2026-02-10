@@ -25,10 +25,10 @@ export function MobileCartFab() {
                     initial={{ y: 100, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 100, opacity: 0 }}
-                    className="fixed bottom-4 left-4 right-4 z-40 md:hidden"
+                    className="fixed bottom-4 left-4 right-4 z-50 md:hidden safe-area-bottom"
                 >
                     <Link href="/checkout">
-                        <div className="flex items-center justify-between rounded-2xl bg-brand-maroon p-4 shadow-xl ring-1 ring-white/10 backdrop-blur-md">
+                        <div className="flex items-center justify-between rounded-2xl bg-brand-maroon p-4 shadow-xl ring-1 ring-white/10 backdrop-blur-md min-h-[56px]">
                             <div className="flex flex-col">
                                 <span className="text-[10px] font-bold uppercase tracking-widest text-brand-cream/60">
                                     {totalItems} Items

@@ -44,23 +44,30 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))"
         },
         brand: {
-          maroon: "#8B0000", // Brighter Maroon for accents
-          dark: "#2A0A0A",   // Deep Dark Brown/Maroon Background
-          gold: "#C5A059",   // Muted Luxury Gold
-          cream: "#F3E5D8",  // Warm Beige/Parchment
-          black: "#1A1A1A",
-        }
+          tamarind: "#4A1F1A", // Primary Brand Color (Header, Footer, Hero)
+          cocoa: "#5C2621",    // Surface / Card Color
+          gold: "#E3B25C",     // Accent / CTA Color
+          cream: "#F3E5D8",    // Text Color
+          dark: "#3A1411",     // Background Gradient Start
+          black: "#2A0D0B",    // Background Gradient End
+          buttonText: "#3A1411", // Text on primary buttons
+          maroon: "#4A1F1A",   // Alias — same as tamarind (admin/checkout text)
+          chrome: "#F3E5D8",   // Alias — same as cream (inactive nav text)
+        },
+        veg: "#15803D",
+        nonveg: "#B91C1C",
       },
       fontFamily: {
-        serif: ["var(--font-heading)", "Playfair Display", "serif"],
-        sans: ["var(--font-body)", "Inter", "sans-serif"]
+        sans: ["var(--font-body)", "sans-serif"],
+        serif: ["var(--font-heading)", "serif"],
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)"
-      }
-    }
+        sm: "calc(var(--radius) - 4px)",
+        "card": "14px", // Radius: 14px for Menu Cards
+      },
+    },
   },
-  plugins: [require("tailwindcss-animate")]
+  plugins: [],
 };

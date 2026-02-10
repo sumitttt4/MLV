@@ -1,19 +1,18 @@
-import { Hero } from "@/components/Hero";
-import { MenuSection } from "@/components/MenuSection";
-import { AboutSection } from "@/components/AboutSection";
-import { FeaturesSection } from "@/components/FeaturesSection";
+import { Hero } from "@/components/home/Hero";
+import { Signatures } from "@/components/home/Signatures";
+import { Ambiance } from "@/components/home/Ambiance";
+import { SocialGrid } from "@/components/home/SocialGrid";
+import { FooterCTA } from "@/components/layout/FooterCTA";
 import { Footer } from "@/components/Footer";
-import { PartySection } from "@/components/PartySection";
-import { ReviewsSection } from "@/components/ReviewsSection";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-brand-dark text-brand-cream overflow-x-hidden">
+    <main className="min-h-screen overflow-x-hidden">
       <Hero />
-      <FeaturesSection /> {/* Keeping features as Why Choose Us */}
-      <MenuSection />
-      <PartySection />
-      <ReviewsSection />
+      <Signatures />
+      <Ambiance />
+      <SocialGrid />
+      <FooterCTA />
       <Footer />
     </main>
   );

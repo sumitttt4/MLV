@@ -135,7 +135,7 @@ export function RazorpayButton({
         currency: "INR",
         name: "Hotel MLV Grand",
         order_id: orderId,
-        theme: { color: "#4A0404" },
+        theme: { color: "#4A1F1A" },
         handler: async (payment) => {
           try {
             // 1. Verify Payment on Server
@@ -174,7 +174,6 @@ export function RazorpayButton({
             onSuccess?.();
             router.push(`/order/${orderRecordId}`);
           } catch (error) {
-            console.error("Payment flow failed", error);
             toast.error("Payment successful but verification failed. Please contact support.");
           }
         }
@@ -193,7 +192,7 @@ export function RazorpayButton({
       type="button"
       onClick={handlePayment}
       disabled={isPaying || disabled}
-      className="w-full rounded-full bg-brand-maroon px-6 py-3 text-sm font-semibold text-brand-cream shadow-sm transition hover:bg-brand-maroon/90 disabled:cursor-not-allowed disabled:bg-brand-maroon/40"
+      className="w-full rounded-full bg-brand-gold px-6 py-3 text-sm font-semibold text-brand-dark shadow-sm transition hover:bg-brand-cream disabled:cursor-not-allowed disabled:bg-brand-maroon/40"
     >
       {isPaying ? "Opening payment..." : disabled ? "Enter Address to Order" : "Pay with Razorpay"}
     </button>

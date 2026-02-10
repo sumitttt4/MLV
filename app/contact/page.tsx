@@ -103,7 +103,7 @@ export default function ContactPage() {
 
                 <div className="mb-16 text-center">
                     <span className="text-sm font-bold uppercase tracking-[0.3em] text-brand-gold">Get in Touch</span>
-                    <h1 className="mt-4 font-serif text-5xl font-bold md:text-7xl">Contact Us</h1>
+                    <h1 className="mt-4 font-serif text-3xl font-bold sm:text-5xl md:text-7xl">Contact Us</h1>
                 </div>
 
                 <div className="grid gap-12 lg:grid-cols-2">
@@ -116,7 +116,9 @@ export default function ContactPage() {
                                 </div>
                                 <h3 className="font-serif text-xl font-bold text-brand-gold">Visit Us</h3>
                                 <p className="text-sm leading-relaxed text-brand-cream/70">
-                                    No. 123, Brigade Road, Bangalore, <br /> Karnataka 560001
+                                    # 174/3, Opp. Ferra, Mandur Post,<br />
+                                    Budigere Main Road, Near Baldwin School,<br />
+                                    Bengaluru, Karnataka-560049
                                 </p>
                             </div>
 
@@ -126,9 +128,10 @@ export default function ContactPage() {
                                 </div>
                                 <h3 className="font-serif text-xl font-bold text-brand-gold">Call Us</h3>
                                 <p className="text-sm leading-relaxed text-brand-cream/70">
-                                    +91 80 4567 8901 <br />
-                                    +91 98765 43210
+                                    <a href="tel:+917795676809" className="hover:text-brand-gold transition-colors">+91 77956 76809</a><br />
+                                    <a href="tel:+917975161096" className="hover:text-brand-gold transition-colors">+91 79751 61096</a>
                                 </p>
+                                <p className="mt-2 text-xs font-bold uppercase tracking-wider text-brand-gold/70">Free Home Delivery</p>
                             </div>
 
                             <div className="space-y-4 rounded-2xl border border-white/5 bg-white/5 p-6 backdrop-blur transition-all hover:border-brand-gold/30">
@@ -157,7 +160,8 @@ export default function ContactPage() {
                         {/* Map Embed */}
                         <div className="h-[300px] w-full overflow-hidden rounded-3xl border border-white/10 grayscale filter hover:grayscale-0 transition-all duration-500">
                             <iframe
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3770.812395353066!2d72.8468817!3d19.0760909!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c5b63b5f000b%3A0x6a2c286595a8b5e!2sSantacruz%20East%2C%20Mumbai%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin"
+                                title="Hotel MLV Grand location on Google Maps"
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3887.0!2d77.714!3d13.035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sMandur%2C%20Bengaluru!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin"
                                 width="100%"
                                 height="100%"
                                 style={{ border: 0 }}
@@ -272,7 +276,7 @@ export default function ContactPage() {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="flex w-full items-center justify-center gap-2 rounded-lg bg-brand-gold py-4 text-sm font-bold uppercase tracking-widest text-brand-dark hover:bg-white transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                                className="flex w-full items-center justify-center gap-2 rounded-lg bg-brand-gold py-4 text-sm font-bold uppercase tracking-widest text-brand-dark hover:bg-brand-cream transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                             >
                                 {isSubmitting ? (
                                     <>

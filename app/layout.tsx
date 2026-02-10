@@ -55,18 +55,19 @@ export default function RootLayout({
               image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
               "@id": "https://mlvgrand.com",
               url: "https://mlvgrand.com",
-              telephone: "+919876543210",
+              telephone: "+917795676809",
               address: {
                 "@type": "PostalAddress",
-                streetAddress: "123 Culinary Avenue, Food District",
-                addressLocality: "Mumbai",
-                postalCode: "400001",
+                streetAddress: "# 174/3, Opp. Ferra, Mandur Post, Budigere Main Road, Near Baldwin School",
+                addressLocality: "Bengaluru",
+                postalCode: "560049",
+                addressRegion: "Karnataka",
                 addressCountry: "IN",
               },
               geo: {
                 "@type": "GeoCoordinates",
-                latitude: 19.076,
-                longitude: 72.8777,
+                latitude: 13.035,
+                longitude: 77.714,
               },
               openingHoursSpecification: [
                 {

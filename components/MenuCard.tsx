@@ -22,11 +22,11 @@ export function MenuCard({ item, index }: MenuCardProps) {
 
   return (
     <div
-      className="group relative flex w-full items-center justify-between gap-4 overflow-hidden rounded-xl bg-white/5 p-4 transition-colors hover:bg-white/10 sm:gap-6"
+      className="group relative flex w-full items-center justify-between gap-4 overflow-hidden rounded-card bg-brand-cocoa p-5 transition-colors sm:gap-6"
     >
       {/* Image & Title Section */}
       <div className="flex flex-1 items-center gap-4 sm:gap-5">
-        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-black/20">
+        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-brand-dark/20">
           <Image
             src={item.imageUrl ?? fallbackImage}
             alt={item.name}
@@ -38,18 +38,18 @@ export function MenuCard({ item, index }: MenuCardProps) {
 
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <h3 className="font-sans text-base font-bold text-brand-cream">
+            <h3 className="font-serif text-[18px] sm:text-[18px] font-medium text-brand-cream leading-tight">
               {item.name}
             </h3>
-            <div className={`h-2 w-2 shrink-0 rounded-full ${isVeg ? "bg-green-500" : "bg-red-500"}`} />
+            <div className={`h-2 w-2 shrink-0 rounded-full ${isVeg ? "bg-veg" : "bg-nonveg"}`} />
           </div>
 
-          <p className="text-xs text-brand-cream/60 line-clamp-1 max-w-[200px]">
+          <p className="text-sm text-brand-cream/70 line-clamp-1 max-w-[200px] font-sans">
             {item.description}
           </p>
 
-          <div className="flex items-center gap-3">
-            <span className="font-bold text-brand-gold text-sm">
+          <div className="flex items-center gap-3 mt-1">
+            <span className="font-sans font-semibold text-brand-gold text-[20px]">
               ₹{item.price}
             </span>
             {item.spiceLevel && item.spiceLevel !== "Mild" && (
@@ -62,7 +62,7 @@ export function MenuCard({ item, index }: MenuCardProps) {
               </span>
             )}
             {item.prepTime && (
-              <span className="text-[10px] text-brand-cream/40">
+              <span className="text-[10px] text-brand-cream/40 font-sans">
                 {item.prepTime} min
               </span>
             )}
@@ -73,17 +73,17 @@ export function MenuCard({ item, index }: MenuCardProps) {
       {/* Buttons */}
       <div className="shrink-0 z-10">
         {quantity > 0 ? (
-          <div className="flex items-center gap-3 rounded-lg border border-brand-gold/30 bg-black/40 px-2 py-1">
+          <div className="flex items-center gap-3 rounded-lg border border-brand-gold bg-transparent px-2 py-1">
             <button
               onClick={() => updateQuantity(item.id, quantity - 1)}
-              className="flex h-7 w-7 items-center justify-center rounded bg-white/10 text-brand-cream hover:bg-brand-gold hover:text-brand-dark"
+              className="flex h-7 w-7 items-center justify-center rounded text-brand-gold hover:bg-brand-gold hover:text-brand-buttonText active:scale-95 transition-all"
             >
               -
             </button>
-            <span className="min-w-[1rem] text-center text-sm font-bold text-brand-gold">{quantity}</span>
+            <span className="min-w-[1rem] text-center text-sm font-bold text-brand-gold font-sans">{quantity}</span>
             <button
               onClick={() => updateQuantity(item.id, quantity + 1)}
-              className="flex h-7 w-7 items-center justify-center rounded bg-brand-gold text-brand-dark hover:bg-white"
+              className="flex h-7 w-7 items-center justify-center rounded text-brand-gold hover:bg-brand-gold hover:text-brand-buttonText active:scale-95 transition-all"
             >
               +
             </button>
@@ -91,7 +91,7 @@ export function MenuCard({ item, index }: MenuCardProps) {
         ) : (
           <button
             onClick={() => addItem(item)}
-            className="rounded-lg bg-brand-gold px-5 py-2 text-xs font-bold uppercase tracking-widest text-brand-dark hover:bg-white"
+            className="rounded-lg bg-brand-gold px-5 py-2 text-[14px] font-semibold text-brand-buttonText uppercase tracking-[0.04em] hover:bg-brand-cream transition-colors font-sans"
           >
             Add
           </button>

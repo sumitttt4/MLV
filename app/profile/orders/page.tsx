@@ -239,7 +239,7 @@ export default function OrdersPage() {
   // =======================================================================
 
   return (
-    <main className="min-h-screen bg-brand-dark bg-hero-texture text-brand-cream relative pt-36">
+    <main className="min-h-screen bg-brand-dark text-brand-cream relative pt-36">
       {/* Background overlay */}
       <div className="absolute inset-0 bg-brand-dark/95 backdrop-blur-[2px]" />
 
@@ -298,7 +298,7 @@ export default function OrdersPage() {
               type="button"
               disabled={isSearching}
               onClick={handleSearch}
-              className="flex items-center gap-2 rounded-xl bg-brand-gold px-6 py-3 text-sm font-bold uppercase tracking-wider text-brand-dark transition-all hover:bg-white hover:scale-[1.03] disabled:pointer-events-none disabled:opacity-50"
+              className="flex items-center gap-2 rounded-xl bg-brand-gold px-6 py-3 text-sm font-bold uppercase tracking-wider text-brand-dark transition-all hover:bg-brand-cream hover:scale-[1.03] disabled:pointer-events-none disabled:opacity-50"
             >
               {isSearching ? (
                 <RefreshCw className="h-4 w-4 animate-spin" />
@@ -366,7 +366,7 @@ export default function OrdersPage() {
               </p>
               <Link
                 href="/"
-                className="mt-8 rounded-full bg-brand-gold px-8 py-3 text-sm font-bold uppercase tracking-widest text-brand-dark transition-all hover:bg-white hover:scale-105"
+                className="mt-8 rounded-full bg-brand-gold px-8 py-3 text-sm font-bold uppercase tracking-widest text-brand-dark transition-all hover:bg-brand-cream hover:scale-105"
               >
                 Browse Menu
               </Link>
@@ -519,7 +519,7 @@ export default function OrdersPage() {
                                   e.stopPropagation();
                                   handleReorder(order);
                                 }}
-                                className="inline-flex items-center gap-2 rounded-full bg-brand-gold px-5 py-2.5 text-sm font-bold uppercase tracking-wider text-brand-dark transition-all hover:bg-white hover:scale-[1.03]"
+                                className="inline-flex items-center gap-2 rounded-full bg-brand-gold px-5 py-2.5 text-sm font-bold uppercase tracking-wider text-brand-dark transition-all hover:bg-brand-cream hover:scale-[1.03]"
                               >
                                 <RefreshCw className="h-3.5 w-3.5" />
                                 Reorder

@@ -51,45 +51,45 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen bg-brand-cream text-brand-maroon">
+    <main className="min-h-screen bg-gradient-to-b from-brand-dark to-brand-black text-brand-cream">
       <div className="mx-auto flex min-h-screen w-full max-w-6xl items-center justify-center px-6 py-12">
-        <div className="w-full max-w-md rounded-3xl border border-brand-gold/30 bg-white p-8 shadow-xl">
+        <div className="w-full max-w-md rounded-3xl border border-white/10 bg-brand-cocoa p-8 shadow-2xl">
           <p className="text-xs uppercase tracking-[0.3em] text-brand-gold">
             Admin Access
           </p>
-          <h1 className="mt-3 text-3xl font-semibold text-brand-maroon">
+          <h1 className="mt-3 text-3xl font-serif font-semibold text-brand-cream">
             Welcome back
           </h1>
-          <p className="mt-2 text-sm text-brand-maroon/70">
+          <p className="mt-2 text-sm text-brand-cream/70">
             Sign in with your admin credentials to continue.
           </p>
 
           <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-            <label className="block text-sm font-semibold">
+            <label className="block text-sm font-medium text-brand-cream/80">
               Email address
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                className="mt-2 w-full rounded-2xl border border-brand-maroon/20 bg-brand-cream/40 px-4 py-2 text-sm shadow-sm focus:border-brand-maroon/50 focus:outline-none"
+                className="mt-2 w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-brand-cream placeholder-white/25 transition-all focus:border-brand-gold/50 focus:bg-black/40 focus:outline-none focus:ring-1 focus:ring-brand-gold/50"
                 placeholder="you@hotelmlvgrand.com"
               />
             </label>
-            <label className="block text-sm font-semibold">
+            <label className="block text-sm font-medium text-brand-cream/80">
               Password
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
-                className="mt-2 w-full rounded-2xl border border-brand-maroon/20 bg-brand-cream/40 px-4 py-2 text-sm shadow-sm focus:border-brand-maroon/50 focus:outline-none"
+                className="mt-2 w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-brand-cream placeholder-white/25 transition-all focus:border-brand-gold/50 focus:bg-black/40 focus:outline-none focus:ring-1 focus:ring-brand-gold/50"
                 placeholder="Enter your password"
               />
             </label>
 
             {error ? (
-              <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
+              <p className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
                 {error}
               </p>
             ) : null}
@@ -97,7 +97,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full rounded-full bg-brand-maroon px-6 py-3 text-sm font-semibold text-brand-cream shadow-sm transition hover:bg-brand-maroon/90 disabled:cursor-not-allowed disabled:bg-brand-maroon/40"
+              className="w-full rounded-full bg-brand-gold px-6 py-3.5 text-sm font-bold text-brand-buttonText shadow-lg transition hover:bg-brand-gold/90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isSubmitting ? "Signing in..." : "Sign in"}
             </button>

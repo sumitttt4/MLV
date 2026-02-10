@@ -24,7 +24,7 @@ export default function GlobalError({
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="mt-6 rounded-full bg-brand-gold px-6 py-3 text-sm font-bold text-brand-dark shadow-sm transition hover:bg-white hover:scale-105"
+            className="mt-6 rounded-full bg-brand-gold px-6 py-3 text-sm font-bold text-brand-dark shadow-sm transition hover:bg-brand-cream hover:scale-105"
           >
             Reload Page
           </button>

@@ -171,11 +171,11 @@ export default function CheckoutPage() {
      ════════════════════════════════════════════════ */
 
   return (
-    <main className="min-h-screen bg-brand-dark bg-hero-texture text-brand-cream relative pt-28">
+    <main className="min-h-screen bg-brand-dark text-brand-cream relative pt-20 sm:pt-28">
       {/* Background Overlay */}
       <div className="absolute inset-0 bg-brand-dark/90 backdrop-blur-[1px]" />
 
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-20 lg:flex-row">
+      <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-10 sm:gap-8 sm:px-6 sm:py-20 lg:flex-row">
         {/* ──────────── LEFT: Cart Items ──────────── */}
         <section className="flex-1 space-y-6">
           {/* Order Type Toggle */}
@@ -257,7 +257,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* Cart Items Card */}
-          <div className="rounded-3xl border border-brand-gold/10 bg-brand-dark/50 p-8 shadow-2xl backdrop-blur-md">
+          <div className="rounded-3xl border border-brand-gold/10 bg-brand-dark/50 p-5 sm:p-8 shadow-2xl backdrop-blur-md">
             <div className="flex items-center gap-4 border-b border-brand-gold/10 pb-6">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-gold/10 text-brand-gold">
                 <span className="font-serif text-xl font-bold">1</span>
@@ -288,7 +288,7 @@ export default function CheckoutPage() {
                   </div>
                   <Link
                     href="/"
-                    className="mt-4 rounded-full bg-brand-gold px-8 py-3 text-sm font-bold uppercase tracking-widest text-brand-dark transition-all hover:bg-white hover:scale-105"
+                    className="mt-4 rounded-full bg-brand-gold px-8 py-3 text-sm font-bold uppercase tracking-widest text-brand-dark transition-all hover:bg-brand-cream hover:scale-105"
                   >
                     Browse Menu
                   </Link>
@@ -386,7 +386,7 @@ export default function CheckoutPage() {
         {/* ──────────── RIGHT: Details & Payment ──────────── */}
         <aside className="w-full max-w-lg space-y-6">
           {/* Customer Details Card */}
-          <div className="rounded-3xl border border-brand-gold/10 bg-brand-dark/50 p-8 shadow-2xl backdrop-blur-md">
+          <div className="rounded-3xl border border-brand-gold/10 bg-brand-dark/50 p-5 sm:p-8 shadow-2xl backdrop-blur-md">
             <div className="mb-6 flex items-center gap-4 border-b border-brand-gold/10 pb-6">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-gold/10 text-brand-gold">
                 <span className="font-serif text-xl font-bold">2</span>
@@ -479,7 +479,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* Payment Method Card */}
-          <div className="rounded-3xl border border-brand-gold/10 bg-brand-dark/50 p-8 shadow-2xl backdrop-blur-md">
+          <div className="rounded-3xl border border-brand-gold/10 bg-brand-dark/50 p-5 sm:p-8 shadow-2xl backdrop-blur-md">
             <div className="mb-6 flex items-center gap-4 border-b border-brand-gold/10 pb-6">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-gold/10 text-brand-gold">
                 <span className="font-serif text-xl font-bold">3</span>
@@ -531,7 +531,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* Payment Summary Card */}
-          <div className="relative overflow-hidden rounded-3xl border border-brand-gold/20 bg-gradient-to-br from-brand-dark to-black p-8 shadow-2xl">
+          <div className="relative overflow-hidden rounded-3xl border border-brand-gold/20 bg-gradient-to-br from-brand-dark to-black p-5 sm:p-8 shadow-2xl">
             {/* Decorative Glow */}
             <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-brand-gold/10 blur-[50px]" />
 
@@ -590,7 +590,7 @@ export default function CheckoutPage() {
                   type="button"
                   onClick={handleCodOrder}
                   disabled={!formReady || placingOrder}
-                  className="w-full rounded-full bg-brand-maroon px-6 py-3 text-sm font-semibold text-brand-cream shadow-sm transition hover:bg-brand-maroon/90 disabled:cursor-not-allowed disabled:bg-brand-maroon/40"
+                  className="w-full rounded-full bg-brand-gold px-6 py-3 text-sm font-semibold text-brand-dark shadow-sm transition hover:bg-brand-cream disabled:cursor-not-allowed disabled:bg-brand-maroon/40"
                 >
                   {placingOrder
                     ? "Placing order..."

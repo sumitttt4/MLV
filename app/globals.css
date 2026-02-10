@@ -4,16 +4,13 @@
 
 :root {
   --background: 40 33% 96%;
-  /* #F9F5F0 converted to HSL roughly */
   --foreground: 360 90% 15%;
-  /* #4A0404 */
   --card: 0 0% 100%;
   --card-foreground: 360 90% 15%;
   --popover: 0 0% 100%;
   --popover-foreground: 360 90% 15%;
   --primary: 360 90% 15%;
   --primary-foreground: 45 61% 52%;
-  /* Gold */
   --secondary: 45 61% 52%;
   --secondary-foreground: 360 90% 15%;
   --muted: 40 33% 92%;
@@ -30,31 +27,73 @@
   --font-body: "Inter", sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
-  @apply bg-brand-dark text-brand-cream font-sans antialiased;
+  @apply text-brand-cream font-sans antialiased min-h-screen;
+  background: linear-gradient(180deg, #3A1411 0%, #2A0D0B 100%);
+  background-attachment: fixed;
 }
 
-.glass-card {
-  @apply bg-brand-dark/60 backdrop-blur-md shadow-xl border border-brand-gold/10;
+/* Grain / Noise overlay – disabled on mobile for scroll perf */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
 }
 
-.bg-hero-texture {
-  background-image: radial-gradient(circle at 20% 30%,
-      rgba(197, 160, 89, 0.08),
-      transparent 40%),
-    radial-gradient(circle at 80% 70%,
-      rgba(139, 0, 0, 0.1),
-      transparent 40%),
-    url("https://www.transparenttextures.com/patterns/stardust.png");
-  /* Optional subtle noise */
-  background-color: #2A0A0A;
+@media (max-width: 768px) {
+  body::after {
+    display: none;
+  }
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  @apply font-serif;
+/* Scrollbar utilities */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
 }
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Gold gradient text utility */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #E3B25C 0%, #F5D998 50%, #E3B25C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Parallax helper */
+.parallax-container {
+  perspective: 1px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Horizontal scroll snap */
+.snap-x-mandatory {
+  scroll-snap-type: x mandatory;
+}
+.snap-center-child > * {
+  scroll-snap-align: center;
+}
+
+/* Safe area support for notched devices */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
