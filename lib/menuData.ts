@@ -654,13 +654,19 @@ export const menuCategories: MenuCategoryData[] = [
         id: "pizza-1",
         name: "Pizza (Veg)",
         isVeg: true,
-        description: "₹349–₹389",
+        variants: [
+          { label: "Regular", price: 349, isVeg: true },
+          { label: "Large", price: 389, isVeg: true },
+        ],
       },
       {
         id: "pizza-2",
         name: "Pizza (Non-Veg)",
         isVeg: false,
-        description: "₹429–₹479",
+        variants: [
+          { label: "Regular", price: 429, isVeg: false },
+          { label: "Large", price: 479, isVeg: false },
+        ],
       },
     ],
   },
@@ -730,7 +736,10 @@ export const menuCategories: MenuCategoryData[] = [
         id: "des-5",
         name: "Ice Cream (2 scoops)",
         isVeg: true,
-        description: "₹129–₹169",
+        variants: [
+          { label: "Regular", price: 129, isVeg: true },
+          { label: "Premium", price: 169, isVeg: true },
+        ],
       },
     ],
   },
@@ -744,13 +753,19 @@ export const menuCategories: MenuCategoryData[] = [
         id: "bev-1",
         name: "Lassi",
         isVeg: true,
-        description: "₹159–₹179",
+        variants: [
+          { label: "Regular", price: 159, isVeg: true },
+          { label: "Special", price: 179, isVeg: true },
+        ],
       },
       {
         id: "bev-2",
         name: "Milkshakes",
         isVeg: true,
-        description: "₹169–₹179",
+        variants: [
+          { label: "Regular", price: 169, isVeg: true },
+          { label: "Special", price: 179, isVeg: true },
+        ],
       },
       {
         id: "bev-3",

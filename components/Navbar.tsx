@@ -2,14 +2,16 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { ShoppingBag, UserCircle, Menu, X } from "lucide-react";
+import { ShoppingBag, UserCircle, Menu, X, Package } from "lucide-react";
 import { useCart } from "@/store/useCart";
 import { useAuth } from "@/store/useAuth";
+import { useOfferBar } from "@/store/useOfferBar";
 import { useEffect, useState } from "react";
 
 export function Navbar() {
     const cartQuantity = useCart((state) => state.items.length);
     const user = useAuth((state) => state.user);
+    const offerBarVisible = useOfferBar((s) => s.visible);
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -32,17 +34,25 @@ export function Navbar() {
         return () => { document.body.style.overflow = ""; };
     }, [mobileMenuOpen]);
 
-    const navLinks = [
+    const baseLinks = [
         { name: "Home", href: "/" },
         { name: "Menu", href: "/menu" },
-        { name: "My Orders", href: "/profile/orders" },
+    ];
+
+    const authLinks = mounted && user
+        ? [{ name: "My Orders", href: "/profile/orders" }]
+        : [];
+
+    const navLinks = [
+        ...baseLinks,
+        ...authLinks,
         { name: "Book Table", href: "/reservation" },
         { name: "Contact", href: "/contact" },
     ];
 
     return (
         <motion.header
-            className="fixed left-0 right-0 top-3 z-50 px-3 transition-all duration-300 pointer-events-none sm:px-4 sm:top-4 lg:top-6 lg:px-6"
+            className={`fixed left-0 right-0 z-50 px-3 transition-all duration-300 pointer-events-none sm:px-4 lg:px-6 ${offerBarVisible ? 'top-[2.5rem] sm:top-[2.75rem] lg:top-[3rem]' : 'top-3 sm:top-4 lg:top-6'}`}
         >
             <div
                 className={`pointer-events-auto mx-auto flex max-w-7xl items-center justify-between rounded-full px-4 py-2.5 transition-all duration-300 sm:px-6 sm:py-3 ${scrolled || mobileMenuOpen
@@ -76,6 +86,18 @@ export function Navbar() {
 
                 {/* Actions */}
                 <div className="flex items-center gap-2 sm:gap-3">
+                    {/* My Orders shortcut — visible only when logged in */}
+                    {mounted && user && (
+                        <Link
+                            href="/profile/orders"
+                            className="hidden lg:flex items-center gap-1.5 rounded-full border border-brand-gold/30 bg-transparent px-3 py-2 min-h-[44px] transition-all hover:border-brand-gold hover:bg-brand-gold/10 z-50"
+                            title="My Orders"
+                        >
+                            <Package className="h-4 w-4 text-brand-gold" />
+                            <span className="text-[11px] font-bold text-brand-gold uppercase tracking-wider font-sans">Orders</span>
+                        </Link>
+                    )}
+
                     <Link
                         href={user ? "/profile" : "/auth"}
                         className="flex items-center gap-2 rounded-full border border-brand-gold/30 bg-transparent px-2.5 py-2 min-h-[44px] min-w-[44px] justify-center transition-all hover:border-brand-gold hover:bg-brand-gold/10 z-50 sm:px-3"

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="92" fill="#4A1F1A"/>
+  <rect x="77" y="77" width="358" height="358" rx="43" fill="#2A0D0B" stroke="#E3B25C" stroke-width="8"/>
+  <text x="256" y="240.7" text-anchor="middle" dominant-baseline="central" font-family="serif" font-weight="bold" font-size="195" fill="#E3B25C">MLV</text>
+  <text x="256" y="353.5" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-weight="600" font-size="51" letter-spacing="10" fill="#E3B25C" opacity="0.7">GRAND</text>
+</svg>

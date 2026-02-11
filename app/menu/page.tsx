@@ -1,14 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Search, X, Grid3x3, List } from 'lucide-react';
+import { Search, X, Grid3x3, List, Check, ShoppingBag, ArrowRight } from 'lucide-react';
 import { menuCategories, type MenuItemData, type MenuCategoryData } from '@/lib/menuData';
 import { CategoryIcon } from '@/components/CategoryIcon';
 import { VariantSelector } from '@/components/VariantSelector';
 import { DietaryToggle } from '@/components/DietaryToggle';
 import { useMenuStore } from '@/store/useMenuStore';
 import { useCart } from '@/store/useCart';
+import { useCartDrawer } from '@/store/useCartDrawer';
+import { formatCurrency } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 
 type FilterMode = 'all' | 'veg' | 'non-veg';
 type ViewMode = 'grid' | 'list';
@@ -325,11 +329,10 @@ interface MenuItemCardProps {
 }
 
 function MenuItemCard({ item, filterMode, onVariantSelectClick }: MenuItemCardProps) {
-  const addItem = useCart((state) => state.addItem);
-  const updateQuantity = useCart((state) => state.updateQuantity);
-  const getItemQuantity = useCart((state) => state.getItemQuantity);
   const isVeg = item.isVeg ?? true;
   const hasVariants = item.variants && item.variants.length > 0;
+  const openCart = useCartDrawer((s) => s.open);
+  const [justAdded, setJustAdded] = useState(false);
 
   // Variant stripping: only show matching variants in filtered mode
   const isFiltered = filterMode === 'veg' || filterMode === 'non-veg';
@@ -352,14 +355,20 @@ function MenuItemCard({ item, filterMode, onVariantSelectClick }: MenuItemCardPr
   // Show "Choose Option" only when multiple variants visible
   const showVariantPicker = hasVariants && !autoResolved && visibleVariants.length > 0;
 
-  const quantity = getItemQuantity(resolvedId);
+  // Cart hooks — subscribe to items array so re-render fires on cart change
+  const addItem = useCart((state) => state.addItem);
+  const updateQuantity = useCart((state) => state.updateQuantity);
+  const quantity = useCart((state) =>
+    state.items.find((e) => e.item.id === resolvedId)?.quantity ?? 0
+  );
 
   const handleAddItem = () => {
     const price = resolvedPrice;
     if (price === undefined) return;
+    const itemName = resolvedVariant ? `${item.name} (${resolvedVariant.label})` : item.name;
     addItem({
       id: resolvedId,
-      name: resolvedVariant ? `${item.name} (${resolvedVariant.label})` : item.name,
+      name: itemName,
       price,
       isVeg: resolvedIsVeg,
       imageUrl: null,
@@ -370,6 +379,13 @@ function MenuItemCard({ item, filterMode, onVariantSelectClick }: MenuItemCardPr
       categoryId: '',
       createdAt: '',
     });
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1500);
+    toast.success(`${itemName} added`, {
+      description: `₹${price} · Tap View Cart to review`,
+      duration: 2000,
+      position: 'top-center',
+    });
   };
 
   const handleVariantSelect = () => {
@@ -379,7 +395,7 @@ function MenuItemCard({ item, filterMode, onVariantSelectClick }: MenuItemCardPr
   };
 
   return (
-    <div className="group relative flex flex-col justify-between w-full rounded-card bg-brand-cocoa p-5 transition-colors">
+    <div className={`group relative flex flex-col justify-between w-full rounded-card bg-brand-cocoa p-5 transition-all duration-300 ${quantity > 0 ? 'ring-1 ring-brand-gold/30' : ''}`}>
       <div>
         {/* Category Badge */}
         <div className="flex items-center gap-2 mb-3 opacity-60">
@@ -447,25 +463,37 @@ function MenuItemCard({ item, filterMode, onVariantSelectClick }: MenuItemCardPr
         </button>
       ) : (resolvedPrice !== undefined) ? (
         quantity > 0 ? (
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 bg-brand-tamarind rounded-lg p-1 border border-brand-gold/40">
-              <button
-                onClick={() => updateQuantity(resolvedId, quantity - 1)}
-                className="w-9 h-9 flex items-center justify-center rounded bg-brand-cocoa text-brand-gold hover:bg-brand-gold hover:text-brand-dark transition-colors text-base font-bold"
-              >
-                -
-              </button>
-              <span className="text-brand-gold font-bold text-sm min-w-[1.5rem] text-center">
-                {quantity}
-              </span>
-              <button
-                onClick={() => updateQuantity(resolvedId, quantity + 1)}
-                className="w-9 h-9 flex items-center justify-center rounded bg-brand-gold text-brand-dark hover:bg-brand-cream transition-colors text-base font-bold"
-              >
-                +
-              </button>
+          <div className="space-y-2">
+            {/* Quantity row */}
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-1 bg-brand-tamarind rounded-lg p-1 border border-brand-gold/30">
+                <button
+                  onClick={() => updateQuantity(resolvedId, quantity - 1)}
+                  className="w-9 h-9 flex items-center justify-center rounded bg-brand-cocoa text-brand-gold hover:bg-brand-gold hover:text-brand-dark transition-colors text-base font-bold"
+                >
+                  -
+                </button>
+                <span className="text-brand-gold font-bold text-sm min-w-[1.5rem] text-center">
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => updateQuantity(resolvedId, quantity + 1)}
+                  className="w-9 h-9 flex items-center justify-center rounded bg-brand-gold text-brand-dark hover:bg-brand-cream transition-colors text-base font-bold"
+                >
+                  +
+                </button>
+              </div>
+              <span className="text-sm font-bold text-brand-gold font-sans">₹{resolvedPrice! * quantity}</span>
             </div>
-            <span className="text-xs font-bold text-brand-gold/70 uppercase tracking-wider">In Cart</span>
+            {/* View Cart CTA */}
+            <button
+              onClick={openCart}
+              className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-brand-gold/10 border border-brand-gold/20 text-brand-gold text-xs font-bold uppercase tracking-wider hover:bg-brand-gold/20 transition-all"
+            >
+              <ShoppingBag size={13} />
+              View Cart
+              <ArrowRight size={12} />
+            </button>
           </div>
         ) : (
           <button
@@ -487,11 +515,9 @@ interface MenuItemListRowProps {
 }
 
 function MenuItemListRow({ item, filterMode, onVariantSelectClick }: MenuItemListRowProps) {
-  const addItem = useCart((state) => state.addItem);
-  const updateQuantity = useCart((state) => state.updateQuantity);
-  const getItemQuantity = useCart((state) => state.getItemQuantity);
   const isVeg = item.isVeg ?? true;
   const hasVariants = item.variants && item.variants.length > 0;
+  const openCart = useCartDrawer((s) => s.open);
 
   // Variant stripping
   const isFiltered = filterMode === 'veg' || filterMode === 'non-veg';
@@ -512,14 +538,21 @@ function MenuItemListRow({ item, filterMode, onVariantSelectClick }: MenuItemLis
   const resolvedIsVeg = resolvedVariant ? (resolvedVariant.isVeg ?? true) : isVeg;
 
   const showVariantPicker = hasVariants && !autoResolved && visibleVariants.length > 0;
-  const quantity = getItemQuantity(resolvedId);
+
+  // Cart hooks — subscribe to items array so re-render fires on cart change
+  const addItem = useCart((state) => state.addItem);
+  const updateQuantity = useCart((state) => state.updateQuantity);
+  const quantity = useCart((state) =>
+    state.items.find((e) => e.item.id === resolvedId)?.quantity ?? 0
+  );
 
   const handleAddItem = () => {
     const price = resolvedPrice;
     if (price === undefined) return;
+    const itemName = resolvedVariant ? `${item.name} (${resolvedVariant.label})` : item.name;
     addItem({
       id: resolvedId,
-      name: resolvedVariant ? `${item.name} (${resolvedVariant.label})` : item.name,
+      name: itemName,
       price,
       isVeg: resolvedIsVeg,
       imageUrl: null,
@@ -530,6 +563,11 @@ function MenuItemListRow({ item, filterMode, onVariantSelectClick }: MenuItemLis
       categoryId: '',
       createdAt: '',
     });
+    toast.success(`${itemName} added`, {
+      description: `₹${price} · Tap View Cart to review`,
+      duration: 2000,
+      position: 'top-center',
+    });
   };
 
   const handleVariantSelect = () => {
@@ -539,7 +577,7 @@ function MenuItemListRow({ item, filterMode, onVariantSelectClick }: MenuItemLis
   };
 
   return (
-    <div className="bg-brand-cocoa rounded-card p-4 transition-colors">
+    <div className={`bg-brand-cocoa rounded-card p-4 transition-all duration-300 ${quantity > 0 ? 'ring-1 ring-brand-gold/30' : ''}`}>
       <div className="flex items-center justify-between gap-4">
         {/* Left Section */}
         <div className="flex items-center gap-5 flex-1 min-w-0">
@@ -593,21 +631,31 @@ function MenuItemListRow({ item, filterMode, onVariantSelectClick }: MenuItemLis
             </button>
           ) : (resolvedPrice !== undefined) ? (
             quantity > 0 ? (
-              <div className="flex items-center gap-2 bg-brand-tamarind rounded-lg p-1 border border-brand-gold/40">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1 bg-brand-tamarind rounded-lg p-1 border border-brand-gold/30">
+                  <button
+                    onClick={() => updateQuantity(resolvedId, quantity - 1)}
+                    className="w-8 h-8 flex items-center justify-center rounded bg-brand-cocoa text-brand-gold hover:bg-brand-gold hover:text-brand-dark transition-colors text-sm font-bold"
+                  >
+                    -
+                  </button>
+                  <span className="text-brand-gold font-bold text-sm min-w-[1.25rem] text-center">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={() => updateQuantity(resolvedId, quantity + 1)}
+                    className="w-8 h-8 flex items-center justify-center rounded bg-brand-gold text-brand-dark hover:bg-brand-cream transition-colors text-sm font-bold"
+                  >
+                    +
+                  </button>
+                </div>
+                <span className="text-sm font-bold text-brand-gold font-sans">₹{resolvedPrice! * quantity}</span>
                 <button
-                  onClick={() => updateQuantity(resolvedId, quantity - 1)}
-                  className="w-8 h-8 flex items-center justify-center rounded bg-brand-cocoa text-brand-gold hover:bg-brand-gold hover:text-brand-dark transition-colors text-sm font-bold"
+                  onClick={openCart}
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand-gold/10 border border-brand-gold/20 text-brand-gold text-xs font-bold uppercase tracking-wider hover:bg-brand-gold/20 transition-all"
                 >
-                  -
-                </button>
-                <span className="text-brand-gold font-bold text-sm min-w-[1.25rem] text-center">
-                  {quantity}
-                </span>
-                <button
-                  onClick={() => updateQuantity(resolvedId, quantity + 1)}
-                  className="w-8 h-8 flex items-center justify-center rounded bg-brand-gold text-brand-dark hover:bg-brand-cream transition-colors text-sm font-bold"
-                >
-                  +
+                  <ShoppingBag size={12} />
+                  <ArrowRight size={11} />
                 </button>
               </div>
             ) : (

@@ -1,6 +1,6 @@
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { ToasterProvider } from "@/components/ToasterProvider";
 
 const playfair = Playfair_Display({
@@ -15,9 +15,25 @@ const inter = Inter({
   display: "swap",
 });
 
+export const viewport: Viewport = {
+  themeColor: "#4A1F1A",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
   title: "Hotel MLV Grand",
   description: "Luxury dining and ordering experience",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "MLV Grand",
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+  },
   openGraph: {
     title: "Hotel MLV Grand",
     description: "Premium Dining",
@@ -34,6 +50,7 @@ export const metadata: Metadata = {
 
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { Navbar } from "@/components/Navbar";
+import { OfferBar } from "@/components/layout/OfferBar";
 import { InstallPrompt } from "@/components/layout/InstallPrompt";
 import { MobileCartFab } from "@/components/layout/MobileCartFab";
 
@@ -44,6 +61,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
+      <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.svg" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+      </head>
       <body suppressHydrationWarning>
         <script
           type="application/ld+json"
@@ -88,12 +111,28 @@ export default function RootLayout({
             }),
           }}
         />
+        <OfferBar />
         <Navbar />
         {children}
         <CartDrawer />
         <MobileCartFab />
         <InstallPrompt />
         <ToasterProvider />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js').then(function(reg) {
+                    console.log('SW registered:', reg.scope);
+                  }).catch(function(err) {
+                    console.log('SW registration failed:', err);
+                  });
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );

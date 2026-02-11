@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useCart } from "@/store/useCart";
+import { useCartDrawer } from "@/store/useCartDrawer";
 import { X, ShoppingBag, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,7 +10,9 @@ import Image from "next/image";
 
 export function CartDrawer() {
     const [isMobile, setIsMobile] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
+    const isOpen = useCartDrawer((s) => s.isOpen);
+    const closeDrawer = useCartDrawer((s) => s.close);
+    const openDrawer = useCartDrawer((s) => s.open);
 
     const items = useCart((state) => state.items);
     const removeItem = useCart((state) => state.removeItem);
@@ -31,7 +34,7 @@ export function CartDrawer() {
     return (
         <>
             <button
-                onClick={() => setIsOpen(true)}
+                onClick={() => openDrawer()}
                 className="hidden md:flex fixed bottom-6 right-6 z-40 h-14 w-14 items-center justify-center rounded-full bg-brand-gold shadow-[0_4px_20px_rgba(0,0,0,0.4)] transition-transform hover:scale-110 active:scale-95 text-brand-dark md:bottom-8 md:right-8"
             >
                 <ShoppingBag className="h-6 w-6" />
@@ -49,7 +52,7 @@ export function CartDrawer() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            onClick={() => setIsOpen(false)}
+                            onClick={() => closeDrawer()}
                             className="fixed inset-0 z-50 bg-brand-black/80 backdrop-blur-sm"
                         />
                         <motion.div
@@ -68,7 +71,7 @@ export function CartDrawer() {
                                 <div className="flex items-center justify-between border-b border-brand-gold/10 p-6 bg-brand-cocoa/50">
                                     <h2 className="text-2xl font-serif font-bold text-brand-cream">Your Order</h2>
                                     <button
-                                        onClick={() => setIsOpen(false)}
+                                        onClick={() => closeDrawer()}
                                         className="rounded-full p-2 text-brand-cream/60 hover:bg-brand-gold/10 hover:text-brand-gold transition-colors"
                                     >
                                         <X className="h-6 w-6" />
@@ -152,7 +155,7 @@ export function CartDrawer() {
                                     </div>
                                     <Link
                                         href="/checkout"
-                                        onClick={() => setIsOpen(false)}
+                                        onClick={() => closeDrawer()}
                                         className={`flex w-full items-center justify-center rounded-xl bg-brand-gold py-4 font-bold text-brand-dark uppercase tracking-widest shadow-lg shadow-brand-gold/20 transition-all hover:bg-brand-cream hover:scale-[1.02] active:scale-[0.98] ${items.length === 0 ? 'pointer-events-none opacity-50 grayscale' : ''}`}
                                     >
                                         Checkout

@@ -7,31 +7,31 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Search, Truck, ShoppingBag, UtensilsCrossed } from "lucide-react";
 
-/* ── Slideshow images (royalty-free Unsplash) ── */
+/* ── Slideshow images (royalty-free Pexels — premium dark-mood Indian cuisine) ── */
 const heroImages = [
   {
-    src: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=1920&q=80",
-    alt: "Aromatic Hyderabadi Biryani",
+    src: "https://images.pexels.com/photos/28674690/pexels-photo-28674690.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop",
+    alt: "Rich Indian Lamb Curry in Traditional Metal Bowl",
   },
   {
-    src: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=1920&q=80",
-    alt: "Creamy Butter Chicken",
+    src: "https://images.pexels.com/photos/29685054/pexels-photo-29685054.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop",
+    alt: "Creamy Butter Chicken in Copper Pan",
   },
   {
-    src: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=1920&q=80",
-    alt: "Fresh Butter Naan",
+    src: "https://images.pexels.com/photos/32825916/pexels-photo-32825916.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop",
+    alt: "Authentic Biryani with Spiced Lamb and Fresh Vegetables",
   },
   {
-    src: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=1920&q=80",
-    alt: "Grilled Tandoori Platter",
+    src: "https://images.pexels.com/photos/10508207/pexels-photo-10508207.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop",
+    alt: "Vibrant Indian Curries on Dark Rustic Table",
   },
   {
-    src: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=1920&q=80",
-    alt: "Indian Thali Spread",
+    src: "https://images.pexels.com/photos/35158690/pexels-photo-35158690.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop",
+    alt: "Butter Chicken Curry in Brass Bowl",
   },
   {
-    src: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=1920&q=80",
-    alt: "Hakka Noodles",
+    src: "https://images.pexels.com/photos/28674557/pexels-photo-28674557.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop",
+    alt: "Rich Dal Makhani in Traditional Brass Pan",
   },
 ];
 
