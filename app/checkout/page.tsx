@@ -298,8 +298,8 @@ export default function CheckoutPage() {
                 items.map((entry) => (
                   <div key={entry.item.id} className="group">
                     {/* Item row */}
-                    <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/5 bg-white/5 p-3 transition-all hover:border-brand-gold/20 hover:bg-white/10">
-                      <div className="flex items-center gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-white/5 bg-white/5 p-3 transition-all hover:border-brand-gold/20 hover:bg-white/10">
+                      <div className="flex w-full sm:w-auto items-center gap-4">
                         <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-white/10">
                           <Image
                             src={
@@ -323,7 +323,7 @@ export default function CheckoutPage() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-4">
+                      <div className="flex w-full sm:w-auto items-center justify-between sm:justify-start gap-4 pl-20 sm:pl-0">
                         {/* Quantity controls */}
                         <div className="flex items-center gap-1">
                           <button
