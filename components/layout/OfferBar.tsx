@@ -90,7 +90,7 @@ export function OfferBar() {
         setBarVisible(false);
       }
     }
-  }, []);
+  }, [setBarVisible]);
 
   const handleDismiss = () => {
     setDismissed(true);

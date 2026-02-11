@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect, useRef } from "react";
+import { useMemo, useState, useEffect, useRef, useCallback } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -29,7 +29,7 @@ export default function AdminOrdersPage() {
     audioRef.current = new Audio("/sounds/ding.mp3"); // Ensure this file exists or use a CDN
   }, []);
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       const orders = await getLiveOrders();
       // Transform Supabase data to OrderRow
@@ -53,15 +53,15 @@ export default function AdminOrdersPage() {
     } catch (e) {
       console.error("Failed to fetch live orders", e);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchOrders(); // Initial fetch
     const interval = setInterval(fetchOrders, 10000); // Poll every 10s
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchOrders]);
 
-  const handleStatusChange = async (id: string, newStatus: OrderStatus) => {
+  const handleStatusChange = useCallback(async (id: string, newStatus: OrderStatus) => {
     // Optimistic update
     setData(prev => prev.map(row => row.id === id ? { ...row, status: newStatus } : row));
     try {
@@ -71,7 +71,7 @@ export default function AdminOrdersPage() {
       console.error("Status update failed", e);
       fetchOrders(); // Revert on error
     }
-  };
+  }, [fetchOrders]);
 
   const columns = useMemo<ColumnDef<OrderRow>[]>(
     () => [
@@ -106,7 +106,6 @@ export default function AdminOrdersPage() {
       },
       { accessorKey: "time", header: "Time" }
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [handleStatusChange]
   );
 
