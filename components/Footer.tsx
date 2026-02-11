@@ -16,7 +16,7 @@ export function Footer() {
                         </span>
                     </Link>
                     <p className="text-sm leading-relaxed text-brand-cream/60">
-                        Experience the finest culinary journey with tastes that linger and ambiance that mesmerizes. A tradition of luxury since 2018.
+                        Experience the finest culinary journey with tastes that linger and ambiance that mesmerizes. A tradition of luxury since 2019.
                     </p>
                     <div className="flex gap-3">
                         {([{Icon: Facebook, label: "Facebook"}, {Icon: Instagram, label: "Instagram"}, {Icon: Twitter, label: "Twitter"}]).map(({Icon, label}) => (

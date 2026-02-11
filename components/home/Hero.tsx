@@ -151,7 +151,7 @@ export function Hero() {
           custom={0}
           className="mb-5 text-xs font-bold uppercase tracking-[0.35em] text-brand-gold/80"
         >
-          Est. 2018 &mdash; Bengaluru
+          Est. 2019 &mdash; Bengaluru
         </motion.p>
 
         {/* Brand name */}
