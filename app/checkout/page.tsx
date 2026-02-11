@@ -7,6 +7,7 @@ import { RazorpayButton } from "@/components/checkout/RazorpayButton";
 import type { DeliveryZone, OrderType, PaymentMethod } from "@/types/schema";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { toast } from "sonner";
 import { Minus, Plus, Truck, ShoppingBag, UtensilsCrossed } from "lucide-react";
 
@@ -300,13 +301,15 @@ export default function CheckoutPage() {
                     <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/5 bg-white/5 p-3 transition-all hover:border-brand-gold/20 hover:bg-white/10">
                       <div className="flex items-center gap-4">
                         <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-white/10">
-                          <img
+                          <Image
                             src={
                               entry.item.imageUrl ||
                               "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=100&q=60"
                             }
                             alt={entry.item.name}
-                            className="h-full w-full object-cover"
+                            fill
+                            className="object-cover"
+                            unoptimized
                           />
                         </div>
 

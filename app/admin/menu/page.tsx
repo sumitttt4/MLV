@@ -25,6 +25,7 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
+import Image from "next/image";
 
 interface MenuItemRow {
   id: string;
@@ -146,12 +147,14 @@ export default function AdminMenuPage() {
         accessorKey: "imageUrl",
         header: "Image",
         cell: ({ row }) => (
-          <div className="h-12 w-16 overflow-hidden rounded-xl border border-brand-gold/30 bg-white">
+          <div className="relative h-12 w-16 overflow-hidden rounded-xl border border-brand-gold/30 bg-white">
             {row.original.imageUrl ? (
-              <img
+              <Image
                 src={row.original.imageUrl}
                 alt={row.original.name}
-                className="h-full w-full object-cover"
+                fill
+                className="object-cover"
+                unoptimized
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center text-xs text-brand-maroon/50">

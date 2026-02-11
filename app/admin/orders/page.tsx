@@ -106,7 +106,8 @@ export default function AdminOrdersPage() {
       },
       { accessorKey: "time", header: "Time" }
     ],
-    []
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [handleStatusChange]
   );
 
   const table = useReactTable({

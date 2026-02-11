@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { menuItems } from "@/lib/dummyData";
 
@@ -51,12 +52,14 @@ export default function MenuItemPage({ params }: MenuPageProps) {
   return (
     <main className="min-h-screen bg-brand-cream text-brand-maroon">
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-6 py-12 lg:flex-row">
-        <div className="w-full overflow-hidden rounded-3xl bg-white shadow-sm">
+        <div className="relative h-80 w-full overflow-hidden rounded-3xl bg-white shadow-sm">
           {item.image ? (
-            <img
+            <Image
               src={item.image}
               alt={item.name}
-              className="h-80 w-full object-cover"
+              fill
+              className="object-cover"
+              unoptimized
             />
           ) : null}
         </div>

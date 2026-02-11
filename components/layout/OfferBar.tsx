@@ -152,7 +152,6 @@ export function OfferBar() {
               transition={{ duration: 0.3, ease: "easeOut" }}
               className="w-full flex justify-center"
             >
-            >
               {offer.href ? (
                 <Link href={offer.href} className="block hover:opacity-80 transition-opacity">
                   <Content />
