@@ -37,6 +37,7 @@ export function Navbar() {
     const baseLinks = [
         { name: "Home", href: "/" },
         { name: "Menu", href: "/menu" },
+        { name: "Offers", href: "/offers" },
     ];
 
     const authLinks = mounted && user
@@ -52,7 +53,7 @@ export function Navbar() {
 
     return (
         <motion.header
-            className={`fixed left-0 right-0 z-50 px-3 transition-all duration-300 pointer-events-none sm:px-4 lg:px-6 ${offerBarVisible ? 'top-[2.5rem] sm:top-[2.75rem] lg:top-[3rem]' : 'top-3 sm:top-4 lg:top-6'}`}
+            className={`fixed left-0 right-0 z-50 px-3 transition-all duration-300 pointer-events-none sm:px-4 lg:px-6 ${offerBarVisible ? 'top-[3.75rem] sm:top-[4rem] lg:top-[4.5rem]' : 'top-3 sm:top-4 lg:top-6'}`}
         >
             <div
                 className={`pointer-events-auto mx-auto flex max-w-7xl items-center justify-between rounded-full px-4 py-2.5 transition-all duration-300 sm:px-6 sm:py-3 ${scrolled || mobileMenuOpen

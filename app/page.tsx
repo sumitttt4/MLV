@@ -1,6 +1,5 @@
 import { Hero } from "@/components/home/Hero";
 import { Signatures } from "@/components/home/Signatures";
-import { OffersSection } from "@/components/home/OffersSection";
 import { Ambiance } from "@/components/home/Ambiance";
 import { SocialGrid } from "@/components/home/SocialGrid";
 import { FooterCTA } from "@/components/layout/FooterCTA";
@@ -11,7 +10,6 @@ export default function HomePage() {
     <main className="min-h-screen overflow-x-hidden">
       <Hero />
       <Signatures />
-      <OffersSection />
       <Ambiance />
       <SocialGrid />
       <FooterCTA />

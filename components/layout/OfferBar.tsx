@@ -109,16 +109,18 @@ export function OfferBar() {
   };
 
   const Content = () => (
-    <div className="flex items-center justify-center gap-1.5 sm:gap-2">
-      <span className="text-brand-gold">{offer.icon}</span>
-      <span className="text-brand-cream/80 text-[10px] sm:text-xs font-sans font-medium">
-        {offer.text}
-      </span>
-      <span className="text-brand-gold font-bold text-[10px] sm:text-xs font-sans">
-        {offer.highlight}
-      </span>
+    <div className="flex items-center justify-center gap-3 sm:gap-4 px-2">
+      <span className="text-brand-gold p-1.5 rounded-full bg-brand-gold/10 shrink-0">{offer.icon}</span>
+      <div className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-2 text-center">
+        <span className="text-brand-cream/90 text-xs sm:text-sm font-sans font-medium">
+          {offer.text}
+        </span>
+        <span className="text-brand-gold font-bold text-xs sm:text-sm font-sans tracking-wide">
+          {offer.highlight}
+        </span>
+      </div>
       {offer.code && (
-        <span className="hidden sm:inline-flex items-center gap-1 ml-1 px-2 py-0.5 rounded bg-brand-gold/15 border border-brand-gold/25 text-brand-gold text-[10px] font-bold font-mono tracking-wider">
+        <span className="hidden sm:inline-flex items-center gap-1.5 ml-1 px-3 py-1 rounded-md bg-brand-gold/15 border border-brand-gold/30 text-brand-gold text-xs font-bold font-mono tracking-widest shadow-[0_2px_10px_rgb(227,178,92,0.1)]">
           {offer.code}
         </span>
       )}
@@ -126,19 +128,19 @@ export function OfferBar() {
   );
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[60] bg-brand-black/95 border-b border-brand-gold/10 backdrop-blur-sm">
-      <div className="relative mx-auto max-w-7xl flex items-center justify-center h-8 sm:h-9 px-10 sm:px-14">
+    <div className="fixed top-0 left-0 right-0 z-[60] bg-[#1a0504] border-b border-brand-gold/15 shadow-sm">
+      <div className="relative mx-auto max-w-7xl flex items-center justify-center h-[3.25rem] sm:h-14 px-12 sm:px-16">
         {/* Prev */}
         <button
           onClick={prev}
-          className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 p-1 text-brand-cream/40 hover:text-brand-gold transition-colors"
+          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-brand-gold/5 text-brand-cream/40 hover:text-brand-gold transition-all group"
           aria-label="Previous offer"
         >
-          <ChevronLeft size={14} />
+          <ChevronLeft size={18} className="transition-transform group-hover:-translate-x-0.5" />
         </button>
 
         {/* Offer content — animated */}
-        <div className="overflow-hidden w-full flex items-center justify-center">
+        <div className="overflow-hidden w-full flex items-center justify-center h-full">
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
               key={offer.id}
@@ -147,7 +149,9 @@ export function OfferBar() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.25, ease: "easeOut" }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="w-full flex justify-center"
+            >
             >
               {offer.href ? (
                 <Link href={offer.href} className="block hover:opacity-80 transition-opacity">
@@ -163,23 +167,23 @@ export function OfferBar() {
         {/* Next */}
         <button
           onClick={next}
-          className="absolute right-7 sm:right-10 top-1/2 -translate-y-1/2 p-1 text-brand-cream/40 hover:text-brand-gold transition-colors"
+          className="absolute right-10 sm:right-14 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-brand-gold/5 text-brand-cream/40 hover:text-brand-gold transition-all group"
           aria-label="Next offer"
         >
-          <ChevronRight size={14} />
+          <ChevronRight size={18} className="transition-transform group-hover:translate-x-0.5" />
         </button>
 
         {/* Dismiss */}
         <button
           onClick={handleDismiss}
-          className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 p-1 text-brand-cream/30 hover:text-brand-cream/70 transition-colors"
+          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-1.5 rounded-full hover:bg-white/5 text-brand-cream/30 hover:text-brand-cream/70 transition-colors"
           aria-label="Dismiss offers"
         >
-          <X size={13} />
+          <X size={16} />
         </button>
 
-        {/* Progress dots */}
-        <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 flex gap-1">
+        {/* Progress dots - HIDDEN as per request */}
+        <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 hidden gap-1">
           {offers.map((_, i) => (
             <button
               key={i}

@@ -52,7 +52,7 @@ const serviceOptions = [
     description: "At your doorstep",
   },
   {
-    label: "Pickup",
+    label: "Takeaway",
     icon: ShoppingBag,
     href: "/menu?mode=pickup",
     description: "Ready when you are",
@@ -126,7 +126,7 @@ export function Hero() {
       </div>
 
       {/* Slide indicators */}
-      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-10 flex gap-2 sm:bottom-6">
+      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-10 hidden gap-2 sm:bottom-6">
         {heroImages.map((_, i) => (
           <button
             key={i}
@@ -191,7 +191,7 @@ export function Hero() {
             <Link
               key={service.label}
               href={service.href}
-              className="group flex flex-col items-center gap-1.5 rounded-2xl border border-brand-gold/15 bg-brand-dark/50 px-4 py-4 backdrop-blur-md transition-all duration-300 hover:border-brand-gold/50 hover:bg-brand-dark/70 hover:scale-105 sm:gap-2 sm:px-7 sm:py-5 lg:px-8 lg:py-6 min-w-[90px] sm:min-w-[120px] lg:min-w-[140px]"
+              className="group flex flex-col items-center gap-1.5 rounded-2xl border border-brand-gold/15 bg-brand-dark/50 px-4 py-4 backdrop-blur-md transition-all duration-300 hover:border-brand-gold/50 hover:bg-brand-dark/70 hover:scale-105 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_brand-gold/20] sm:gap-2 sm:px-7 sm:py-5 lg:px-8 lg:py-6 min-w-[90px] sm:min-w-[120px] lg:min-w-[140px]"
             >
               <service.icon className="h-5 w-5 text-brand-gold transition-transform duration-300 group-hover:scale-110 sm:h-6 sm:w-6 lg:h-7 lg:w-7" />
               <span className="text-[11px] font-bold uppercase tracking-wider text-brand-cream sm:text-xs lg:text-sm">
